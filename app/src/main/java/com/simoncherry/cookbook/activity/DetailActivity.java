@@ -75,6 +75,10 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     @BindView(R.id.rv_method)
     RecyclerView rvMethod;
 
+
+    public final static String KEY_RECIPE_ID = "recipeId";
+    public final static String KEY_THUMBNAIL = "thumbnail";
+
     private Context mContext;
     private Unbinder unbinder;
     private ActivityDetailBinding binding;
@@ -195,13 +199,13 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
 
     private void initData() {
         Intent intent = getIntent();
-        String thumbnail = intent.getStringExtra("thumbnail");
+        String thumbnail = intent.getStringExtra(KEY_THUMBNAIL);
         if (thumbnail != null) {
             ImageLoaderUtils.getInstance()
                     .loadImage(thumbnail, R.drawable.default_img, R.drawable.default_img, false, ivImg);
         }
 
-        String recipeId = intent.getStringExtra("recipeId");
+        String recipeId = intent.getStringExtra(KEY_RECIPE_ID);
         if (recipeId != null && !TextUtils.isEmpty(recipeId)) {
             detailPresenter.queryDetail(recipeId);
         } else {

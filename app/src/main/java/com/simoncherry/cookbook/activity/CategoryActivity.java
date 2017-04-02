@@ -88,7 +88,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryView{
 
     private void startRecipeActivity(String cid) {
         Intent intent = new Intent(this, RecipeActivity.class);
-        intent.putExtra("cid", cid);
+        intent.putExtra(RecipeActivity.KEY_CTG_ID, cid);
         startActivity(intent);
     }
 

@@ -12,7 +12,7 @@ import com.simoncherry.cookbook.R;
 public class ImageLoaderUtils {
 
     private static ImageLoaderUtils mInstance;
-    private static BaseLoader mLoader;
+    private static BaseLoader mLoader = new GlideLoader(R.drawable.default_img, R.drawable.default_img);
 
     public ImageLoaderUtils() {
         setLoader(new GlideLoader(R.drawable.default_img, R.drawable.default_img));

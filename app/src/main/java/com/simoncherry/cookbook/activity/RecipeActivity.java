@@ -33,6 +33,9 @@ public class RecipeActivity extends AppCompatActivity implements RecipeView {
     @BindView(R.id.rv_recipe)
     RecyclerView rvRecipe;
 
+
+    public final static String KEY_CTG_ID = "ctgId";
+
     private RecipeAdapter mAdapter;
     private List<MobRecipe> mData;
 
@@ -76,7 +79,6 @@ public class RecipeActivity extends AppCompatActivity implements RecipeView {
         mAdapter.setOnItemClickListener(new RecipeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                //Toast.makeText(mContext, "click No." + position, Toast.LENGTH_SHORT).show();
                 if (mData.size() > position) {
                     startDetailActivity(view, mData.get(position).getMenuId(), mData.get(position).getThumbnail());
                 }
@@ -88,7 +90,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeView {
 
     private void initData() {
         Intent intent = getIntent();
-        String cid = intent.getStringExtra("cid");
+        String cid = intent.getStringExtra(KEY_CTG_ID);
         if (cid != null) {
             recipePresenter.queryRecipe(cid, 1, 20);
         } else {
@@ -98,9 +100,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipeView {
 
     private void startDetailActivity(View view, String recipeId, String thumbnail) {
         Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra("recipeId", recipeId);
-        intent.putExtra("thumbnail", thumbnail);
-//        startActivity(intent);
+        intent.putExtra(DetailActivity.KEY_RECIPE_ID, recipeId);
+        intent.putExtra(DetailActivity.KEY_THUMBNAIL, thumbnail);
         ActivityTransitionLauncher.with(RecipeActivity.this).from(view).launch(intent);
     }
 

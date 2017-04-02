@@ -24,7 +24,7 @@ public class MobRecipe {
     }
 
     public String getCtgTitles() {
-        return ctgTitles;
+        return ctgTitles != null ? ctgTitles : "";
     }
 
     public void setCtgTitles(String ctgTitles) {
@@ -32,7 +32,7 @@ public class MobRecipe {
     }
 
     public String getMenuId() {
-        return menuId;
+        return menuId != null ? menuId : "";
     }
 
     public void setMenuId(String menuId) {
@@ -40,7 +40,7 @@ public class MobRecipe {
     }
 
     public String getName() {
-        return name;
+        return name != null ? name : "";
     }
 
     public void setName(String name) {
@@ -56,7 +56,7 @@ public class MobRecipe {
     }
 
     public String getThumbnail() {
-        return thumbnail;
+        return thumbnail != null ? thumbnail : "";
     }
 
     public void setThumbnail(String thumbnail) {
