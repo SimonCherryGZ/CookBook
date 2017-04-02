@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -50,7 +51,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class DetailActivity extends AppCompatActivity implements DetailView {
+public class DetailActivity extends BaseSwipeBackActivity implements DetailView {
 
     @BindView(R.id.layout_coordinator)
     CoordinatorLayout coordinatorLayout;
@@ -110,6 +111,18 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     @Override
     public void onBackPressed() {
         startExitAnimation();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void hideViewBeforeAnimation() {
