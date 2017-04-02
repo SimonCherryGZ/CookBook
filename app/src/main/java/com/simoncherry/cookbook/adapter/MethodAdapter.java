@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.simoncherry.cookbook.R;
 import com.simoncherry.cookbook.model.MobRecipeMethod;
+import com.simoncherry.cookbook.util.ImageLoaderUtils;
 
 import java.util.List;
 
@@ -70,11 +70,8 @@ public class MethodAdapter extends RecyclerView.Adapter<MethodAdapter.MyViewHold
             String url = method.getImg();
             if (url != null && !TextUtils.isEmpty(url)) {
                 holder.ivImg.setVisibility(View.VISIBLE);
-                Glide.with(mContext).load(url)
-                        .centerCrop()
-                        .placeholder(R.drawable.default_img)
-                        .error(R.drawable.default_img)
-                        .into(holder.ivImg);
+                ImageLoaderUtils.getInstance()
+                        .loadImage(url, R.drawable.default_img, R.drawable.default_img, holder.ivImg);
             } else {
                 holder.ivImg.setVisibility(View.GONE);
             }

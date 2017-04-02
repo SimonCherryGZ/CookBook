@@ -23,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kogitune.activity_transition.ActivityTransition;
@@ -36,6 +35,7 @@ import com.simoncherry.cookbook.model.MobRecipeDetail;
 import com.simoncherry.cookbook.model.MobRecipeMethod;
 import com.simoncherry.cookbook.module.DetailModule;
 import com.simoncherry.cookbook.presenter.impl.DetailPresenterImpl;
+import com.simoncherry.cookbook.util.ImageLoaderUtils;
 import com.simoncherry.cookbook.util.StatusBarUtils;
 import com.simoncherry.cookbook.view.DetailView;
 
@@ -62,8 +62,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     ImageView ivImg;
     @BindView(R.id.iv_shadow)
     ImageView ivShadow;
-    @BindView(R.id.tv_test)
-    TextView tvTest;
     @BindView(R.id.scroll_view)
     NestedScrollView scrollView;
     @BindView(R.id.layout_content)
@@ -196,12 +194,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         Intent intent = getIntent();
         String thumbnail = intent.getStringExtra("thumbnail");
         if (thumbnail != null) {
-            Glide.with(mContext).load(thumbnail)
-                    .centerCrop()
-                    .dontAnimate()
-                    .placeholder(R.drawable.default_img)
-                    .error(R.drawable.default_img)
-                    .into(ivImg);
+            ImageLoaderUtils.getInstance()
+                    .loadImage(thumbnail, R.drawable.default_img, R.drawable.default_img, false, ivImg);
         }
 
         String recipeId = intent.getStringExtra("recipeId");
@@ -223,10 +217,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
             if (recipeDetail != null) {
                 String imgUrl = recipeDetail.getImg();
                 if (imgUrl != null && !TextUtils.isEmpty(imgUrl)) {
-                    Glide.with(mContext).load(imgUrl)
-                            .centerCrop()
-                            .dontAnimate()
-                            .into(ivImg);
+                    ImageLoaderUtils.getInstance()
+                            .loadImage(imgUrl, R.drawable.default_img, R.drawable.default_img, false, ivImg);
                 }
 
                 String summary = recipeDetail.getSumary();

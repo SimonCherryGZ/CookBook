@@ -10,10 +10,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.simoncherry.cookbook.R;
 import com.simoncherry.cookbook.model.MobRecipe;
 import com.simoncherry.cookbook.model.MobRecipeDetail;
+import com.simoncherry.cookbook.util.ImageLoaderUtils;
 
 import java.util.List;
 
@@ -72,10 +72,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.MyViewHold
         if (recipe != null) {
             String thumbnail = recipe.getThumbnail();
             if (thumbnail != null) {
-                Glide.with(mContext).load(thumbnail)
-                        .placeholder(R.drawable.default_img)
-                        .error(R.drawable.default_img)
-                        .into(holder.ivThumbnail);
+                ImageLoaderUtils.getInstance()
+                        .loadImage(thumbnail, R.drawable.default_img, R.drawable.default_img, holder.ivThumbnail);
             } else {
                 holder.ivThumbnail.setImageResource(R.drawable.default_img);
             }

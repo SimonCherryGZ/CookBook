@@ -13,7 +13,7 @@ public class MobRecipeDetail {
     private String sumary;
 
     public String getTitle() {
-        return title;
+        return title != null ? title : "";
     }
 
     public void setTitle(String title) {
@@ -29,7 +29,7 @@ public class MobRecipeDetail {
     }
 
     public String getIngredients() {
-        return ingredients;
+        return ingredients != null ? ingredients : "";
     }
 
     public void setIngredients(String ingredients) {
@@ -37,7 +37,7 @@ public class MobRecipeDetail {
     }
 
     public String getRecipeMethods() {
-        return method;
+        return method != null ? method : "";
     }
 
     public void setRecipeMethods(String recipeMethods) {
@@ -45,7 +45,7 @@ public class MobRecipeDetail {
     }
 
     public String getSumary() {
-        return sumary;
+        return sumary != null ? sumary : "";
     }
 
     public void setSumary(String sumary) {
