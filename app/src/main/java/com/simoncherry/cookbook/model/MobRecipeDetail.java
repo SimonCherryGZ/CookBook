@@ -1,5 +1,7 @@
 package com.simoncherry.cookbook.model;
 
+import android.text.TextUtils;
+
 /**
  * Created by Simon on 2017/3/28.
  */
@@ -29,7 +31,12 @@ public class MobRecipeDetail {
     }
 
     public String getIngredients() {
-        return ingredients != null ? ingredients : "";
+        if (ingredients != null) {
+            ingredients = ingredients.replace("[", "");
+            ingredients = ingredients.replace("]", "");
+            ingredients = ingredients.replace("\"", "");
+        }
+        return ingredients != null && !TextUtils.isEmpty(ingredients) ? ingredients : "不详";
     }
 
     public void setIngredients(String ingredients) {

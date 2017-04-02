@@ -2,16 +2,11 @@ package com.simoncherry.cookbook.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.simoncherry.cookbook.R;
+import com.simoncherry.cookbook.databinding.ItemMethodBinding;
 import com.simoncherry.cookbook.model.MobRecipeMethod;
-import com.simoncherry.cookbook.util.ImageLoaderUtils;
 
 import java.util.List;
 
@@ -40,46 +35,29 @@ public class MethodAdapter extends RecyclerView.Adapter<MethodAdapter.MyViewHold
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView tvMethod;
-        ImageView ivImg;
+        private ItemMethodBinding binding;
 
-        public MyViewHolder(View view) {
-            super(view);
-            tvMethod = (TextView) view.findViewById(R.id.tv_method);
-            ivImg = (ImageView) view.findViewById(R.id.iv_img);
+        public MyViewHolder(ItemMethodBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+
+        public void bind(MobRecipeMethod item) {
+            binding.setMethod(item);
+            binding.executePendingBindings();
         }
     }
 
     @Override
     public MethodAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(mContext.getApplicationContext())
-                .inflate(R.layout.item_method, parent, false));
+        ItemMethodBinding binding = ItemMethodBinding.inflate(LayoutInflater.from(mContext.getApplicationContext()), parent, false);
+        return new MyViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(MethodAdapter.MyViewHolder holder, int position) {
         MobRecipeMethod method = mData.get(position);
-        if (method != null) {
-            String step = method.getStep();
-            if (step != null) {
-                holder.tvMethod.setText(step);
-            } else {
-                holder.tvMethod.setText("");
-            }
-
-            String url = method.getImg();
-            if (url != null && !TextUtils.isEmpty(url)) {
-                holder.ivImg.setVisibility(View.VISIBLE);
-                ImageLoaderUtils.getInstance()
-                        .loadImage(url, R.drawable.default_img, R.drawable.default_img, holder.ivImg);
-            } else {
-                holder.ivImg.setVisibility(View.GONE);
-            }
-
-        } else {
-            holder.tvMethod.setText("");
-            holder.ivImg.setVisibility(View.GONE);
-        }
+        holder.bind(method);
     }
 
     @Override

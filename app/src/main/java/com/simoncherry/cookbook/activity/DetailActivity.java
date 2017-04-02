@@ -3,6 +3,7 @@ package com.simoncherry.cookbook.activity;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
@@ -30,6 +31,7 @@ import com.kogitune.activity_transition.ExitActivityTransition;
 import com.simoncherry.cookbook.R;
 import com.simoncherry.cookbook.adapter.MethodAdapter;
 import com.simoncherry.cookbook.component.DaggerDetailComponent;
+import com.simoncherry.cookbook.databinding.ActivityDetailBinding;
 import com.simoncherry.cookbook.model.MobRecipe;
 import com.simoncherry.cookbook.model.MobRecipeDetail;
 import com.simoncherry.cookbook.model.MobRecipeMethod;
@@ -75,6 +77,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
 
     private Context mContext;
     private Unbinder unbinder;
+    private ActivityDetailBinding binding;
     @Inject
     DetailPresenterImpl detailPresenter;
     private ExitActivityTransition exitTransition;
@@ -86,7 +89,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
         unbinder = ButterKnife.bind(this);
         mContext = DetailActivity.this;
 
@@ -208,6 +211,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
 
     private void handleRecipeResult(MobRecipe value) {
         if (value != null) {
+            binding.setRecipe(value);
+
             String title = value.getName();
             if (title != null) {
                 toolbarLayout.setTitle(title);
@@ -215,25 +220,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
 
             MobRecipeDetail recipeDetail = value.getRecipeDetail();
             if (recipeDetail != null) {
-                String imgUrl = recipeDetail.getImg();
-                if (imgUrl != null && !TextUtils.isEmpty(imgUrl)) {
-                    ImageLoaderUtils.getInstance()
-                            .loadImage(imgUrl, R.drawable.default_img, R.drawable.default_img, false, ivImg);
-                }
-
-                String summary = recipeDetail.getSumary();
-                if (summary != null) {
-                    tvSummary.setText(summary);
-                }
-
-                String ingredients = recipeDetail.getIngredients();
-                if (ingredients != null && !TextUtils.isEmpty(ingredients)) {
-                    ingredients = ingredients.replace("[", "");
-                    ingredients = ingredients.replace("]", "");
-                    ingredients = ingredients.replace("\"", "");
-                    tvIngredients.setText(ingredients);
-                }
-
                 String methods = recipeDetail.getRecipeMethods();
                 if (methods != null && !TextUtils.isEmpty(methods)) {
                     List<MobRecipeMethod> methodList = new Gson().fromJson(methods, new TypeToken<List<MobRecipeMethod>>(){}.getType());

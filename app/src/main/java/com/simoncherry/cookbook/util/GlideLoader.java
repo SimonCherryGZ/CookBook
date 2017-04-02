@@ -10,14 +10,25 @@ import com.bumptech.glide.Glide;
 
 public class GlideLoader implements BaseLoader {
 
+    private int placeholderResId = 0;
+    private int errorResId = 0;
+
+    public GlideLoader() {
+    }
+
+    public GlideLoader(int placeholderResId, int errorResId) {
+        this.placeholderResId = placeholderResId;
+        this.errorResId = errorResId;
+    }
+
     @Override
     public void loadImage(String url, ImageView imageView) {
-        loadImage(url, 0, 0, true, imageView);
+        loadImage(url, placeholderResId, errorResId, true, imageView);
     }
 
     @Override
     public void loadImage(String url, int placeholder, ImageView imageView) {
-        loadImage(url, placeholder, 0, true, imageView);
+        loadImage(url, placeholder, errorResId, true, imageView);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.simoncherry.cookbook.model;
 
+import android.text.TextUtils;
+
 /**
  * Created by Simon on 2017/3/28.
  */
@@ -23,6 +25,10 @@ public class MobRecipeMethod {
 
     public void setStep(String step) {
         this.step = step;
+    }
+
+    public boolean isImgAvailable() {
+        return img != null && !TextUtils.isEmpty(img);
     }
 
     @Override

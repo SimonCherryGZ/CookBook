@@ -1,6 +1,9 @@
 package com.simoncherry.cookbook.util;
 
+import android.databinding.BindingAdapter;
 import android.widget.ImageView;
+
+import com.simoncherry.cookbook.R;
 
 /**
  * Created by Simon on 2017/4/2.
@@ -12,7 +15,7 @@ public class ImageLoaderUtils {
     private static BaseLoader mLoader;
 
     public ImageLoaderUtils() {
-        setLoader(new GlideLoader());
+        setLoader(new GlideLoader(R.drawable.default_img, R.drawable.default_img));
     }
 
     public static void setLoader(BaseLoader mLoader) {
@@ -29,6 +32,11 @@ public class ImageLoaderUtils {
             }
         }
         return mInstance;
+    }
+
+    @BindingAdapter("imageUrl")
+    public static void loadImage(ImageView imageView, String url) {
+        mLoader.loadImage(url, imageView);
     }
 
     public void loadImage(String url, ImageView imageView) {
