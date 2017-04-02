@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.kogitune.activity_transition.ActivityTransitionLauncher;
+import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.simoncherry.cookbook.R;
 import com.simoncherry.cookbook.adapter.RecipeAdapter;
 import com.simoncherry.cookbook.component.DaggerRecipeComponent;
@@ -30,11 +32,16 @@ import butterknife.Unbinder;
 
 public class RecipeActivity extends AppCompatActivity implements RecipeView {
 
+    @BindView(R.id.activity_recipe)
+    TwinklingRefreshLayout refreshLayout;
     @BindView(R.id.rv_recipe)
     RecyclerView rvRecipe;
 
 
     public final static String KEY_CTG_ID = "ctgId";
+    private final static int PAGE_SIZE = 15;
+    private int currentPage = 1;
+    private String ctgId = "";
 
     private RecipeAdapter mAdapter;
     private List<MobRecipe> mData;
@@ -63,6 +70,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeView {
     private void init() {
         initComponent();
         initRecyclerView();
+        initRefreshLayout();
         initData();
     }
 
@@ -71,6 +79,22 @@ public class RecipeActivity extends AppCompatActivity implements RecipeView {
                 .recipeModule(new RecipeModule(getApplicationContext(), this))
                 .build()
                 .inject(this);
+    }
+
+    private void initRefreshLayout() {
+        refreshLayout.setAutoLoadMore(true);
+        refreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
+            @Override
+            public void onRefresh(final TwinklingRefreshLayout refreshLayout) {
+                currentPage = 1;
+                queryRecipe(ctgId, currentPage);
+            }
+
+            @Override
+            public void onLoadMore(final TwinklingRefreshLayout refreshLayout) {
+                queryRecipe(ctgId, currentPage);
+            }
+        });
     }
 
     private void initRecyclerView() {
@@ -90,11 +114,15 @@ public class RecipeActivity extends AppCompatActivity implements RecipeView {
 
     private void initData() {
         Intent intent = getIntent();
-        String cid = intent.getStringExtra(KEY_CTG_ID);
-        if (cid != null) {
-            recipePresenter.queryRecipe(cid, 1, 20);
+        ctgId = intent.getStringExtra(KEY_CTG_ID);
+        queryRecipe(ctgId, currentPage);
+    }
+
+    private void queryRecipe(String ctgId, int currentPage) {
+        if (ctgId != null) {
+            recipePresenter.queryRecipe(ctgId, currentPage, PAGE_SIZE);
         } else {
-            Toast.makeText(mContext, "没有收到CID", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "获取菜谱分类失败，请退出后重新进入", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -107,13 +135,25 @@ public class RecipeActivity extends AppCompatActivity implements RecipeView {
 
     @Override
     public void onQueryRecipeSuccess(MobRecipeResult result) {
-        mData.clear();
         if (result != null) {
+            if (currentPage == 1) {
+                mData.clear();
+            }
             List<MobRecipe> resultList = result.getList();
             if (resultList != null && resultList.size() > 0) {
                 mData.addAll(resultList);
             }
+            currentPage++;
         }
         mAdapter.notifyDataSetChanged();
+
+        refreshLayout.finishRefreshing();
+        refreshLayout.finishLoadmore();
+    }
+
+    @Override
+    public void onQueryRecipeFailed() {
+        refreshLayout.finishRefreshing();
+        refreshLayout.finishLoadmore();
     }
 }

@@ -57,13 +57,15 @@ public class RecipePresenterImpl implements RecipePresenter {
                         if (value != null) {
                             mView.onQueryRecipeSuccess(value);
                         } else {
-                            Toast.makeText(mContext, "value is null", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "无法获取数据，请稍后重试", Toast.LENGTH_SHORT).show();
+                            mView.onQueryRecipeFailed();
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
+                        mView.onQueryRecipeFailed();
                     }
 
                     @Override

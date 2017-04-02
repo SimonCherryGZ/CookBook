@@ -9,4 +9,6 @@ import com.simoncherry.cookbook.model.MobRecipeResult;
 public interface RecipeView {
 
     void onQueryRecipeSuccess(MobRecipeResult result);
+
+    void onQueryRecipeFailed();
 }
