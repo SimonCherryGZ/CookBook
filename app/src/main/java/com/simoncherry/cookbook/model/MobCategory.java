@@ -9,6 +9,7 @@ public class MobCategory {
     private String ctgId;
     private String name;
     private String parentId;
+    private boolean isSelected;
 
     public String getCtgId() {
         return ctgId;
@@ -32,6 +33,14 @@ public class MobCategory {
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
     @Override

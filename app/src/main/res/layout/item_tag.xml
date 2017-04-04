@@ -2,9 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_root"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    tools:background="@color/gray_hint">
+    android:layout_width="70dp"
+    android:layout_height="40dp"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:padding="4dp"
+    android:background="@drawable/tag_bg">
 
     <TextView
         android:id="@+id/tv_name"
@@ -12,6 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textColor="@color/black_tv"
-        android:textSize="16sp"
+        android:textSize="12sp"
         tools:text="西点"/>
+
 </RelativeLayout>

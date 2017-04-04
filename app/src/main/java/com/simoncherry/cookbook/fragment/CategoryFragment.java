@@ -5,14 +5,18 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.orhanobut.logger.Logger;
+import com.simoncherry.cookbook.GridSpacingItemDecoration;
 import com.simoncherry.cookbook.R;
 import com.simoncherry.cookbook.adapter.CategoryAdapter;
+import com.simoncherry.cookbook.adapter.TagAdapter;
 import com.simoncherry.cookbook.component.DaggerCategoryComponent;
 import com.simoncherry.cookbook.model.MobCategory;
 import com.simoncherry.cookbook.model.MobCategoryChild1;
@@ -36,11 +40,18 @@ import butterknife.Unbinder;
  */
 public class CategoryFragment extends Fragment implements CategoryView{
 
+    private final static String TAG = CategoryFragment.class.getSimpleName();
+
     @BindView(R.id.rv_category)
     RecyclerView rvCategory;
+    @BindView(R.id.rv_tag)
+    RecyclerView rvTag;
 
-    private CategoryAdapter mAdapter;
-    private List<MobCategory> mData;
+    private CategoryAdapter categoryAdapter;
+    private List<MobCategory> categoryList;
+    private TagAdapter tagAdapter;
+    private List<List<MobCategory>> allTagList;
+    private List<MobCategory> tagList;
 
     private Context mContext;
     private Unbinder unbinder;
@@ -106,25 +117,37 @@ public class CategoryFragment extends Fragment implements CategoryView{
 
     @Override
     public void onQueryCategorySuccess(MobCategoryResult result) {
-        mData.clear();
+        categoryList.clear();
+        allTagList.clear();
         if (result != null) {
-            mData.add(result.getCategoryInfo());
+//            resultList.add(result.getCategoryInfo());
             // 第1层子类
             ArrayList<MobCategoryChild1> child1 = result.getChilds();
             if (child1 != null && child1.size() > 0) {
                 for (MobCategoryChild1 categoryChild1 : child1) {
-                    mData.add(categoryChild1.getCategoryInfo());
+                    categoryList.add(categoryChild1.getCategoryInfo());
                     // 第2层子类
                     ArrayList<MobCategoryChild2> child2 = categoryChild1.getChilds();
                     if (child2 != null && child2.size() > 0) {
+                        List<MobCategory> childList = new ArrayList<>();
                         for (MobCategoryChild2 categoryChild2 : child2) {
-                            mData.add(categoryChild2.getCategoryInfo());
+                            childList.add(categoryChild2.getCategoryInfo());
                         }
+                        allTagList.add(childList);
                     }
                 }
+                categoryList.get(0).setSelected(true);
             }
         }
-        mAdapter.notifyDataSetChanged();
+
+        if (allTagList != null && allTagList.size() > 0) {
+            Logger.t(TAG).e("allTagList: " + allTagList.toString());
+            tagList.clear();
+            tagList.addAll(allTagList.get(0));
+        }
+
+        categoryAdapter.notifyDataSetChanged();
+        tagAdapter.notifyDataSetChanged();
     }
 
     public interface OnFragmentInteractionListener {
@@ -145,18 +168,36 @@ public class CategoryFragment extends Fragment implements CategoryView{
     }
 
     private void initRecyclerView() {
-        mData = new ArrayList<>();
-        mAdapter = new CategoryAdapter(mContext, mData);
-        mAdapter.setOnItemClickListener(new CategoryAdapter.OnItemClickListener() {
+        categoryList = new ArrayList<>();
+        categoryAdapter = new CategoryAdapter(mContext, categoryList);
+        categoryAdapter.setOnItemClickListener(new CategoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                if (mData.size() > position) {
-                    onClickCategory(mData.get(position).getCtgId(), mData.get(position).getName());
+                if (allTagList.size() > position) {
+                    tagList.clear();
+                    tagList.addAll(allTagList.get(position));
+                    Logger.t(TAG).e("tagList: " + tagList.toString());
+                    tagAdapter.notifyDataSetChanged();
                 }
             }
         });
         rvCategory.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        rvCategory.setAdapter(mAdapter);
+        rvCategory.setAdapter(categoryAdapter);
+
+        allTagList = new ArrayList<>();
+        tagList = new ArrayList<>();
+        tagAdapter = new TagAdapter(mContext, tagList);
+        tagAdapter.setOnItemClickListener(new TagAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                if (tagList.size() > position) {
+                    onClickCategory(tagList.get(position).getCtgId(), tagList.get(position).getName());
+                }
+            }
+        });
+        rvTag.setLayoutManager(new GridLayoutManager(mContext, 3));
+        rvTag.addItemDecoration(new GridSpacingItemDecoration(3, 20, true));
+        rvTag.setAdapter(tagAdapter);
     }
 
     private void onClickCategory(String ctgId, String name) {

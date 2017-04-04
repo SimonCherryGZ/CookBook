@@ -1,6 +1,7 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_category"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -8,8 +9,18 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_category"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/gray_inactive">
     </android.support.v7.widget.RecyclerView>
 
-</FrameLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_tag"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:paddingLeft="5dp">
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>
