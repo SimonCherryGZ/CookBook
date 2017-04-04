@@ -15,6 +15,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
+        android:textColor="@color/black_tv"
+        android:textSize="16sp"
         tools:text="西点"/>
 
     <TextView
@@ -23,6 +25,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
+        android:textColor="@color/gray_tv"
+        android:textSize="16sp"
         tools:text="100001010010"/>
 
     <TextView
@@ -31,5 +35,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
+        android:textColor="@color/gray_tv"
+        android:textSize="16sp"
         tools:text="100001010010"/>
 </LinearLayout>

@@ -1,0 +1,10 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <item name="ic_menu_mylocation" type="drawable">@android:drawable/ic_menu_mylocation</item>
+    <item name="ic_menu_agenda" type="drawable">@android:drawable/ic_menu_agenda</item>
+    <item name="ic_menu_add" type="drawable">@android:drawable/ic_menu_add</item>
+    <item name="ic_menu_history" type="drawable">@android:drawable/ic_menu_recent_history</item>
+    <item name="ic_menu_manage" type="drawable">@android:drawable/ic_menu_manage</item>
+
+    <item name="ic_menu_share" type="drawable">@android:drawable/ic_menu_share</item>
+    <item name="ic_menu_about" type="drawable">@android:drawable/ic_menu_info_details</item>
+</resources>
