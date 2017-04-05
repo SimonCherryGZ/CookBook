@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,8 +36,10 @@ import com.simoncherry.cookbook.databinding.ActivityDetailBinding;
 import com.simoncherry.cookbook.model.MobRecipe;
 import com.simoncherry.cookbook.model.MobRecipeDetail;
 import com.simoncherry.cookbook.model.MobRecipeMethod;
+import com.simoncherry.cookbook.model.RealmMobRecipe;
 import com.simoncherry.cookbook.module.DetailModule;
 import com.simoncherry.cookbook.presenter.impl.DetailPresenterImpl;
+import com.simoncherry.cookbook.realm.RealmHelper;
 import com.simoncherry.cookbook.util.ImageLoaderUtils;
 import com.simoncherry.cookbook.util.StatusBarUtils;
 import com.simoncherry.cookbook.view.DetailView;
@@ -49,6 +52,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
 public class DetailActivity extends BaseSwipeBackActivity implements DetailView {
 
@@ -60,6 +66,8 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailView 
     CollapsingToolbarLayout toolbarLayout;
     @BindView(R.id.tool_bar)
     Toolbar toolbar;
+    @BindView(R.id.fab)
+    FloatingActionButton fabCollect;
     @BindView(R.id.iv_img)
     ImageView ivImg;
     @BindView(R.id.iv_shadow)
@@ -89,6 +97,12 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailView 
     private MethodAdapter mAdapter;
     private List<MobRecipeMethod> mData;
 
+    private Realm realm;
+    private RealmResults<RealmMobRecipe> realmResults;
+
+    private MobRecipe mobRecipe;
+    private String recipeId = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +118,8 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailView 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        realmResults.removeAllChangeListeners();
+        realm.close();
         unbinder.unbind();
     }
 
@@ -130,6 +146,7 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailView 
         toolbarLayout.setClipChildren(false);
         ivShadow.setVisibility(View.INVISIBLE);
         scrollView.setVisibility(View.INVISIBLE);
+        fabCollect.setVisibility(View.INVISIBLE);
     }
 
     private void showViewAfterAnimation() {
@@ -138,6 +155,7 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailView 
         toolbarLayout.setClipChildren(true);
         ivShadow.setVisibility(View.VISIBLE);
         scrollView.setVisibility(View.VISIBLE);
+        fabCollect.setVisibility(View.VISIBLE);
     }
 
     private void startEnterAnimation(Bundle savedInstanceState) {
@@ -183,6 +201,7 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailView 
         initView();
         initRecyclerView();
         initData();
+        initRealm();
     }
 
     private void initComponent() {
@@ -198,6 +217,14 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailView 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
+
+        fabCollect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(mContext, "click fabCollect", Toast.LENGTH_SHORT).show();
+                handleCollection();
+            }
+        });
     }
 
     private void initRecyclerView() {
@@ -217,15 +244,34 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailView 
                     .loadImage(thumbnail, R.drawable.default_img, R.drawable.default_img, false, ivImg);
         }
 
-        String recipeId = intent.getStringExtra(KEY_RECIPE_ID);
+        recipeId = intent.getStringExtra(KEY_RECIPE_ID);
         if (recipeId != null && !TextUtils.isEmpty(recipeId)) {
             detailPresenter.queryDetail(recipeId);
         } else {
+            recipeId = "";
             Toast.makeText(mContext, "没有收到recipeId", Toast.LENGTH_SHORT).show();
         }
     }
 
+    private void initRealm() {
+        realm = Realm.getDefaultInstance();
+        realmResults = realm.where(RealmMobRecipe.class)
+                .equalTo("menuId", recipeId)
+                .findAllAsync();
+        realmResults.addChangeListener(new RealmChangeListener<RealmResults<RealmMobRecipe>>() {
+            @Override
+            public void onChange(RealmResults<RealmMobRecipe> element) {
+                if (element.size() > 0) {
+                    fabCollect.setImageResource(R.drawable.ic_fab_like_p);
+                } else {
+                    fabCollect.setImageResource(R.drawable.ic_fab_like_n);
+                }
+            }
+        });
+    }
+
     private void handleRecipeResult(MobRecipe value) {
+        mobRecipe = value;
         if (value != null) {
             binding.setRecipe(value);
 
@@ -249,9 +295,26 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailView 
         }
     }
 
-
     @Override
     public void onQueryDetailSuccess(MobRecipe value) {
         handleRecipeResult(value);
+    }
+
+    private void handleCollection() {
+        if (realmResults.size() > 0) {
+            //RealmHelper.deleteMobRecipeByMenuId(realm, recipeId);
+            RealmHelper.deleteMobRecipeByResult(realm, realmResults);
+        } else {
+            if (mobRecipe != null && mobRecipe.getRecipeDetail() != null) {
+                RealmMobRecipe realmMobRecipe = new RealmMobRecipe();
+                realmMobRecipe.setCtgTitles(mobRecipe.getCtgTitles());
+                realmMobRecipe.setMenuId(mobRecipe.getMenuId());
+                realmMobRecipe.setName(mobRecipe.getName());
+                realmMobRecipe.setSummary(mobRecipe.getRecipeDetail().getSumary());
+                realmMobRecipe.setIngredients(mobRecipe.getRecipeDetail().getIngredients());
+                realmMobRecipe.setThumbnail(mobRecipe.getThumbnail());
+                RealmHelper.createMobRecipe(realm, realmMobRecipe);
+            }
+        }
     }
 }
