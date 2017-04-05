@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.simoncherry.cookbook.R;
-import com.simoncherry.cookbook.model.RealmCollection;
+import com.simoncherry.cookbook.model.RealmHistory;
 import com.simoncherry.cookbook.util.ImageLoaderUtils;
 
 import java.util.List;
@@ -19,14 +19,14 @@ import java.util.List;
  * Created by Simon on 2017/4/5.
  */
 
-public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.MyViewHolder>{
+public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder>{
 
     private final static String TXT_DEFAULT = "不详";
 
     private Context mContext;
-    private List<RealmCollection> mData;
+    private List<RealmHistory> mData;
 
-    public CollectionAdapter(Context mContext, List<RealmCollection> mData) {
+    public HistoryAdapter(Context mContext, List<RealmHistory> mData) {
         this.mContext = mContext;
         this.mData = mData;
     }
@@ -61,12 +61,12 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.My
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_collection, parent, false));
+        return new MyViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_history, parent, false));
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        RealmCollection recipe = mData.get(position);
+        RealmHistory recipe = mData.get(position);
         if (recipe == null) {
             holder.ivThumbnail.setImageResource(R.drawable.default_img);
             holder.tvName.setText(TXT_DEFAULT);

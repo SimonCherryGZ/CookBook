@@ -1,5 +1,7 @@
 package com.simoncherry.cookbook.model;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -7,7 +9,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by Simon on 2017/4/4.
  */
 
-public class RealmMobRecipe extends RealmObject {
+public class RealmHistory extends RealmObject {
 
     @PrimaryKey
     private long id;
@@ -17,6 +19,7 @@ public class RealmMobRecipe extends RealmObject {
     private String summary;
     private String ingredients;
     private String thumbnail;
+    private Date createTime;
 
     public long getId() {
         return id;
@@ -72,5 +75,13 @@ public class RealmMobRecipe extends RealmObject {
 
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

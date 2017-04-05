@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 import com.kogitune.activity_transition.ActivityTransitionLauncher;
 import com.simoncherry.cookbook.R;
 import com.simoncherry.cookbook.activity.DetailActivity;
-import com.simoncherry.cookbook.adapter.CollectionAdapter;
-import com.simoncherry.cookbook.model.RealmCollection;
+import com.simoncherry.cookbook.adapter.HistoryAdapter;
+import com.simoncherry.cookbook.model.RealmHistory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,33 +27,34 @@ import butterknife.Unbinder;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CollectionFragment#newInstance} factory method to
+ * Use the {@link HistoryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CollectionFragment extends Fragment {
+public class HistoryFragment extends Fragment {
 
     @BindView(R.id.rv_recipe)
     RecyclerView rvRecipe;
 
-    private CollectionAdapter mAdapter;
-    private List<RealmCollection> mData;
+    private HistoryAdapter mAdapter;
+    private List<RealmHistory> mData;
 
     private Context mContext;
     private Unbinder unbinder;
 
     private Realm realm;
-    private RealmResults<RealmCollection> realmResults;
+    private RealmResults<RealmHistory> realmResults;
 
 
-    public CollectionFragment() {
+    public HistoryFragment() {
         // Required empty public constructor
     }
 
-    public static CollectionFragment newInstance() {
-        CollectionFragment fragment = new CollectionFragment();
+    public static HistoryFragment newInstance() {
+        HistoryFragment fragment = new HistoryFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -69,7 +70,7 @@ public class CollectionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_collection, container, false);
+        View view =  inflater.inflate(R.layout.fragment_history, container, false);
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
@@ -95,8 +96,8 @@ public class CollectionFragment extends Fragment {
 
     private void initRecyclerView() {
         mData = new ArrayList<>();
-        mAdapter = new CollectionAdapter(mContext, mData);
-        mAdapter.setOnItemClickListener(new CollectionAdapter.OnItemClickListener() {
+        mAdapter = new HistoryAdapter(mContext, mData);
+        mAdapter.setOnItemClickListener(new HistoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 if (mData.size() > position) {
@@ -110,19 +111,19 @@ public class CollectionFragment extends Fragment {
 
     private void initRealm() {
         realm = Realm.getDefaultInstance();
-        realmResults = realm.where(RealmCollection.class).findAllAsync();
-        realmResults.addChangeListener(new RealmChangeListener<RealmResults<RealmCollection>>() {
+        realmResults = realm.where(RealmHistory.class).findAllAsync().sort("createTime", Sort.DESCENDING);
+        realmResults.addChangeListener(new RealmChangeListener<RealmResults<RealmHistory>>() {
             @Override
-            public void onChange(RealmResults<RealmCollection> element) {
-                loadCollectionRecipeFromRealm(element);
+            public void onChange(RealmResults<RealmHistory> element) {
+                loadHistoryRecipeFromRealm(element);
             }
         });
     }
 
-    private void loadCollectionRecipeFromRealm(RealmResults<RealmCollection> element) {
+    private void loadHistoryRecipeFromRealm(RealmResults<RealmHistory> element) {
         mData.clear();
         if (element.size() > 0) {
-            List<RealmCollection> recipeList = element.subList(0, element.size());
+            List<RealmHistory> recipeList = element.subList(0, element.size());
             mData.addAll(recipeList);
         }
         mAdapter.notifyDataSetChanged();

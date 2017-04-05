@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import com.simoncherry.cookbook.R;
 import com.simoncherry.cookbook.fragment.CategoryFragment;
 import com.simoncherry.cookbook.fragment.CollectionFragment;
+import com.simoncherry.cookbook.fragment.HistoryFragment;
 import com.simoncherry.cookbook.fragment.PageFragment;
 import com.simoncherry.cookbook.fragment.RecipeFragment;
 
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     private PageFragment pageFragment;
     private CategoryFragment categoryFragment;
     private CollectionFragment collectionFragment;
+    private HistoryFragment historyFragment;
     private RecipeFragment recipeFragment;
 
     @Override
@@ -117,6 +119,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_history:
                 toolbar.setTitle(R.string.main_title_history);
+                switchFragment(currentFragment, historyFragment);
                 break;
             case R.id.nav_manage:
                 break;
@@ -180,15 +183,18 @@ public class MainActivity extends AppCompatActivity
         recipeFragment = RecipeFragment.newInstance("0010001010");
         categoryFragment = CategoryFragment.newInstance();
         collectionFragment = CollectionFragment.newInstance();
+        historyFragment = HistoryFragment.newInstance();
 
         currentFragment = pageFragment;
         transaction
                 .add(R.id.layout_content, pageFragment)
                 .add(R.id.layout_content, categoryFragment)
                 .add(R.id.layout_content, collectionFragment)
+                .add(R.id.layout_content, historyFragment)
                 .add(R.id.layout_content, recipeFragment)
                 .hide(categoryFragment)
                 .hide(collectionFragment)
+                .hide(historyFragment)
                 .hide(recipeFragment)
                 .show(pageFragment)
                 .commit();

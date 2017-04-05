@@ -36,7 +36,8 @@ import com.simoncherry.cookbook.databinding.ActivityDetailBinding;
 import com.simoncherry.cookbook.model.MobRecipe;
 import com.simoncherry.cookbook.model.MobRecipeDetail;
 import com.simoncherry.cookbook.model.MobRecipeMethod;
-import com.simoncherry.cookbook.model.RealmMobRecipe;
+import com.simoncherry.cookbook.model.RealmCollection;
+import com.simoncherry.cookbook.model.RealmHistory;
 import com.simoncherry.cookbook.module.DetailModule;
 import com.simoncherry.cookbook.presenter.impl.DetailPresenterImpl;
 import com.simoncherry.cookbook.realm.RealmHelper;
@@ -45,6 +46,7 @@ import com.simoncherry.cookbook.util.StatusBarUtils;
 import com.simoncherry.cookbook.view.DetailView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -98,7 +100,7 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailView 
     private List<MobRecipeMethod> mData;
 
     private Realm realm;
-    private RealmResults<RealmMobRecipe> realmResults;
+    private RealmResults<RealmCollection> realmResults;
 
     private MobRecipe mobRecipe;
     private String recipeId = "";
@@ -255,12 +257,12 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailView 
 
     private void initRealm() {
         realm = Realm.getDefaultInstance();
-        realmResults = realm.where(RealmMobRecipe.class)
+        realmResults = realm.where(RealmCollection.class)
                 .equalTo("menuId", recipeId)
                 .findAllAsync();
-        realmResults.addChangeListener(new RealmChangeListener<RealmResults<RealmMobRecipe>>() {
+        realmResults.addChangeListener(new RealmChangeListener<RealmResults<RealmCollection>>() {
             @Override
-            public void onChange(RealmResults<RealmMobRecipe> element) {
+            public void onChange(RealmResults<RealmCollection> element) {
                 if (element.size() > 0) {
                     fabCollect.setImageResource(R.drawable.ic_fab_like_p);
                 } else {
@@ -293,6 +295,7 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailView 
                 }
             }
         }
+        saveHistoryToRealm();
     }
 
     @Override
@@ -300,20 +303,40 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailView 
         handleRecipeResult(value);
     }
 
+    private void saveHistoryToRealm() {
+        if (mobRecipe != null && mobRecipe.getRecipeDetail() != null) {
+            if (RealmHelper.retrieveHistoryByMenuId(realm, recipeId).size() == 0) {  // 如果没有该条历史
+                if (RealmHelper.retrieveHistory(realm).size() > 5) {  // 如果历史数量大于5
+                    RealmHelper.deleteFirstHistory(realm);
+                }
+
+                RealmHistory realmHistory = new RealmHistory();
+                realmHistory.setCtgTitles(mobRecipe.getCtgTitles());
+                realmHistory.setMenuId(mobRecipe.getMenuId());
+                realmHistory.setName(mobRecipe.getName());
+                realmHistory.setSummary(mobRecipe.getRecipeDetail().getSumary());
+                realmHistory.setIngredients(mobRecipe.getRecipeDetail().getIngredients());
+                realmHistory.setThumbnail(mobRecipe.getThumbnail());
+                realmHistory.setCreateTime(new Date());
+                RealmHelper.createHistory(realm, realmHistory);
+            }
+        }
+    }
+
     private void handleCollection() {
         if (realmResults.size() > 0) {
-            //RealmHelper.deleteMobRecipeByMenuId(realm, recipeId);
-            RealmHelper.deleteMobRecipeByResult(realm, realmResults);
+            //RealmHelper.deleteCollectionByMenuId(realm, recipeId);
+            RealmHelper.deleteCollectionByResult(realm, realmResults);
         } else {
             if (mobRecipe != null && mobRecipe.getRecipeDetail() != null) {
-                RealmMobRecipe realmMobRecipe = new RealmMobRecipe();
-                realmMobRecipe.setCtgTitles(mobRecipe.getCtgTitles());
-                realmMobRecipe.setMenuId(mobRecipe.getMenuId());
-                realmMobRecipe.setName(mobRecipe.getName());
-                realmMobRecipe.setSummary(mobRecipe.getRecipeDetail().getSumary());
-                realmMobRecipe.setIngredients(mobRecipe.getRecipeDetail().getIngredients());
-                realmMobRecipe.setThumbnail(mobRecipe.getThumbnail());
-                RealmHelper.createMobRecipe(realm, realmMobRecipe);
+                RealmCollection realmCollection = new RealmCollection();
+                realmCollection.setCtgTitles(mobRecipe.getCtgTitles());
+                realmCollection.setMenuId(mobRecipe.getMenuId());
+                realmCollection.setName(mobRecipe.getName());
+                realmCollection.setSummary(mobRecipe.getRecipeDetail().getSumary());
+                realmCollection.setIngredients(mobRecipe.getRecipeDetail().getIngredients());
+                realmCollection.setThumbnail(mobRecipe.getThumbnail());
+                RealmHelper.createCollection(realm, realmCollection);
             }
         }
     }
