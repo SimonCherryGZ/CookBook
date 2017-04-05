@@ -27,6 +27,7 @@ import butterknife.Unbinder;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -110,7 +111,7 @@ public class CollectionFragment extends Fragment {
 
     private void initRealm() {
         realm = Realm.getDefaultInstance();
-        realmResults = realm.where(RealmCollection.class).findAllAsync();
+        realmResults = realm.where(RealmCollection.class).findAllSortedAsync("id", Sort.DESCENDING);
         realmResults.addChangeListener(new RealmChangeListener<RealmResults<RealmCollection>>() {
             @Override
             public void onChange(RealmResults<RealmCollection> element) {

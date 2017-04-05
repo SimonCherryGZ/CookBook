@@ -66,11 +66,9 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             //super.onBackPressed();
-            if (previousFragment != null){
+            if (previousFragment instanceof CategoryFragment && currentFragment instanceof RecipeFragment){
                 backToFragment(currentFragment, previousFragment);
-                if (currentFragment instanceof CategoryFragment) {
-                    toolbar.setTitle(R.string.main_title_category);
-                }
+                toolbar.setTitle(R.string.main_title_category);
             }else {
                 super.onBackPressed();
             }
@@ -185,6 +183,7 @@ public class MainActivity extends AppCompatActivity
         collectionFragment = CollectionFragment.newInstance();
         historyFragment = HistoryFragment.newInstance();
 
+        previousFragment = pageFragment;
         currentFragment = pageFragment;
         transaction
                 .add(R.id.layout_content, pageFragment)

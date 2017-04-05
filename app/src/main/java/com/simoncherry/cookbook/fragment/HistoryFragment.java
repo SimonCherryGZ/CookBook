@@ -111,7 +111,7 @@ public class HistoryFragment extends Fragment {
 
     private void initRealm() {
         realm = Realm.getDefaultInstance();
-        realmResults = realm.where(RealmHistory.class).findAllAsync().sort("createTime", Sort.DESCENDING);
+        realmResults = realm.where(RealmHistory.class).findAllSortedAsync("createTime", Sort.DESCENDING);
         realmResults.addChangeListener(new RealmChangeListener<RealmResults<RealmHistory>>() {
             @Override
             public void onChange(RealmResults<RealmHistory> element) {
