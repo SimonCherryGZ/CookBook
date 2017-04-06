@@ -57,6 +57,8 @@ public class RecipeFragment extends Fragment implements RecipeView{
     private final static int PAGE_SIZE = 15;
     private int currentPage = 1;
     private String ctgId = "";
+    private String field = "cid";
+    private String value = "";
 
     private RecipeAdapter mAdapter;
     private List<MobRecipe> mData;
@@ -85,6 +87,8 @@ public class RecipeFragment extends Fragment implements RecipeView{
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             ctgId = getArguments().getString(ARG_CTG_ID);
+            field = "cid";
+            value = getArguments().getString(ARG_CTG_ID);
         }
         mContext = getActivity();
     }
@@ -171,7 +175,8 @@ public class RecipeFragment extends Fragment implements RecipeView{
         initRecyclerView();
         initRefreshLayout();
         currentPage = 1;
-        queryRecipe(ctgId, currentPage);
+        //queryRecipe(ctgId, currentPage);
+        queryRecipeByField(field, value, currentPage);
     }
 
     private void initComponent() {
@@ -187,12 +192,14 @@ public class RecipeFragment extends Fragment implements RecipeView{
             @Override
             public void onRefresh(final TwinklingRefreshLayout refreshLayout) {
                 currentPage = 1;
-                queryRecipe(ctgId, currentPage);
+                //queryRecipe(ctgId, currentPage);
+                queryRecipeByField(field, value, currentPage);
             }
 
             @Override
             public void onLoadMore(final TwinklingRefreshLayout refreshLayout) {
-                queryRecipe(ctgId, currentPage);
+                //queryRecipe(ctgId, currentPage);
+                queryRecipeByField(field, value, currentPage);
             }
         });
     }
@@ -230,8 +237,28 @@ public class RecipeFragment extends Fragment implements RecipeView{
 
     public void changeCategory(String ctgId) {
         this.ctgId = ctgId;
+        this.field = "name";
+        this.value = ctgId;
         currentPage = 1;
         rvRecipe.scrollToPosition(0);
-        queryRecipe(ctgId, currentPage);
+        //queryRecipe(ctgId, currentPage);
+        queryRecipeByField(field, value, currentPage);
+    }
+
+    private void queryRecipeByField(String field, String value, int currentPage) {
+        Logger.t(TAG).e("RecipeFragment: " + RecipeFragment.this.hashCode() + "  |  currentPage: " + currentPage);
+        if (ctgId != null) {
+            recipePresenter.queryRecipeByField(field, value, currentPage, PAGE_SIZE);
+        } else {
+            Toast.makeText(mContext, "获取菜谱分类失败，请退出后重新进入", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void queryRecipeByName(String name) {
+        this.field = "name";
+        this.value = name;
+        currentPage = 1;
+        rvRecipe.scrollToPosition(0);
+        queryRecipeByField(field, value, currentPage);
     }
 }

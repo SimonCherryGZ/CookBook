@@ -7,4 +7,6 @@ package com.simoncherry.cookbook.presenter;
 public interface RecipePresenter {
 
     void queryRecipe(String cid, int page, int size);
+
+    void queryRecipeByField(String field, String value, int page, int size);
 }

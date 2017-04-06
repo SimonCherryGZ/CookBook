@@ -73,4 +73,44 @@ public class RecipePresenterImpl implements RecipePresenter {
                     }
                 });
     }
+
+    @Override
+    public void queryRecipeByField(String field, String value, int page, int size) {
+        Map<String, String> params = new HashMap<>();
+        params.put("key", MobAPIService.MOB_API_KEY);
+        params.put(field, value);
+        params.put("page", String.valueOf(page));
+        params.put("size", String.valueOf(size));
+
+        MobAPIService.getMobAPI()
+                .queryRecipe(params)
+                .map(new MobAPIResultFunc<MobRecipeResult>())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<MobRecipeResult>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onNext(MobRecipeResult value) {
+                        if (value != null) {
+                            mView.onQueryRecipeSuccess(value);
+                        } else {
+                            Toast.makeText(mContext, "无法获取数据，请稍后重试", Toast.LENGTH_SHORT).show();
+                            mView.onQueryRecipeFailed();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
+                        mView.onQueryRecipeFailed();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+    }
 }
