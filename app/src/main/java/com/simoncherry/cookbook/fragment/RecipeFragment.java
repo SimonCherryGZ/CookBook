@@ -237,7 +237,7 @@ public class RecipeFragment extends Fragment implements RecipeView{
 
     public void changeCategory(String ctgId) {
         this.ctgId = ctgId;
-        this.field = "name";
+        this.field = "cid";
         this.value = ctgId;
         currentPage = 1;
         rvRecipe.scrollToPosition(0);
