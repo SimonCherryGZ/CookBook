@@ -95,12 +95,15 @@ public class MainActivity extends AppCompatActivity
             searchView = (SearchView) searchItem.getActionView();
         }
         if (searchView != null) {
+            final SearchView finalSearchView = searchView;
             searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     //Toast.makeText(getApplicationContext(), "查询:" + query, Toast.LENGTH_SHORT).show();
                     onQueryRecipeByName(query);
+                    finalSearchView.setIconified(true);
+                    finalSearchView.setIconified(true);
                     return false;
                 }
 
@@ -110,7 +113,6 @@ public class MainActivity extends AppCompatActivity
                 }
             });
 
-            final SearchView finalSearchView = searchView;
             searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
                 @Override
                 public boolean onSuggestionSelect(int position) {
@@ -123,6 +125,7 @@ public class MainActivity extends AppCompatActivity
                     String query = cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1));
                     //Toast.makeText(getApplicationContext(), "点击:" + query, Toast.LENGTH_SHORT).show();
                     onQueryRecipeByName(query);
+                    finalSearchView.setIconified(true);
                     return false;
                 }
             });
