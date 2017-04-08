@@ -55,4 +55,15 @@ public class RealmCategory extends RealmObject {
     public void setSelected(boolean selected) {
         isSelected = selected;
     }
+
+    @Override
+    public String toString() {
+        return "RealmCategory{" +
+                "ctgId='" + ctgId + '\'' +
+                ", name='" + name + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", isChild=" + isChild +
+                ", isSelected=" + isSelected +
+                '}';
+    }
 }

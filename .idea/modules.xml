@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CookBook.iml" filepath="$PROJECT_DIR$/CookBook.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/channeltagviewLib/channeltagviewLib.iml" filepath="$PROJECT_DIR$/channeltagviewLib/channeltagviewLib.iml" />
     </modules>
   </component>
 </project>

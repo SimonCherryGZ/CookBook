@@ -32,7 +32,7 @@ import com.simoncherry.cookbook.component.DaggerCategoryComponent;
 import com.simoncherry.cookbook.fragment.CategoryFragment;
 import com.simoncherry.cookbook.fragment.CollectionFragment;
 import com.simoncherry.cookbook.fragment.HistoryFragment;
-import com.simoncherry.cookbook.fragment.PageFragment;
+import com.simoncherry.cookbook.fragment.MainFragment;
 import com.simoncherry.cookbook.fragment.RecipeFragment;
 import com.simoncherry.cookbook.model.MobCategoryChild1;
 import com.simoncherry.cookbook.model.MobCategoryChild2;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private Fragment currentFragment;
     private Fragment previousFragment = null;
-    private PageFragment pageFragment;
+    private MainFragment mainFragment;
     private CategoryFragment categoryFragment;
     private CollectionFragment collectionFragment;
     private HistoryFragment historyFragment;
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.nav_home:
                 toolbar.setTitle(R.string.main_title_home);
-                switchFragment(currentFragment, pageFragment);
+                switchFragment(currentFragment, mainFragment);
                 break;
             case R.id.nav_category:
                 toolbar.setTitle(R.string.main_title_category);
@@ -250,12 +250,14 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onSuccess() {
                 realm.close();
+                initFragment();
                 splashImageFadeOut();
             }
         }, new Realm.Transaction.OnError() {
             @Override
             public void onError(Throwable error) {
                 realm.close();
+                initFragment();
                 splashImageFadeOut();
                 Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
             }
@@ -290,7 +292,7 @@ public class MainActivity extends AppCompatActivity
     private void init() {
         initComponent();
         initView();
-        initFragment();
+        //initFragment();
         categoryPresenter.queryCategory();
     }
 
@@ -329,16 +331,16 @@ public class MainActivity extends AppCompatActivity
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        pageFragment = PageFragment.newInstance();
+        mainFragment = mainFragment.newInstance();
         recipeFragment = RecipeFragment.newInstance("0010001010");
         categoryFragment = CategoryFragment.newInstance();
         collectionFragment = CollectionFragment.newInstance();
         historyFragment = HistoryFragment.newInstance();
 
-        previousFragment = pageFragment;
-        currentFragment = pageFragment;
+        previousFragment = mainFragment;
+        currentFragment = mainFragment;
         transaction
-                .add(R.id.layout_content, pageFragment)
+                .add(R.id.layout_content, mainFragment)
                 .add(R.id.layout_content, categoryFragment)
                 .add(R.id.layout_content, collectionFragment)
                 .add(R.id.layout_content, historyFragment)
@@ -347,7 +349,7 @@ public class MainActivity extends AppCompatActivity
                 .hide(collectionFragment)
                 .hide(historyFragment)
                 .hide(recipeFragment)
-                .show(pageFragment)
+                .show(mainFragment)
                 .commit();
     }
 

@@ -18,6 +18,8 @@ import io.realm.Sort;
 
 public class RealmHelper {
 
+    private final static String TAG = RealmHelper.class.getSimpleName();
+
     public static void createCollection(Realm realm, final RealmCollection realmCollection) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -125,13 +127,43 @@ public class RealmHelper {
 
     public static void saveCategoryToRealm(Realm realm, List<RealmCategory> categoryList) {
         for (RealmCategory category : categoryList) {
+            RealmResults<RealmCategory> realmResults = realm.where(RealmCategory.class)
+                    .equalTo("ctgId", category.getCtgId()).findAll();
+            if (realmResults.size() > 0) {
+                RealmCategory old = realmResults.first();
+                category.setSelected(old.isSelected());
+            }
             realm.copyToRealmOrUpdate(category);
         }
     }
 
-    public static RealmResults<RealmCategory> retrieveParentCategory(Realm realm) {
-        return realm.where(RealmCategory.class)
-                .equalTo("isChild", false)
-                .findAll();
+    public static void setFirstChildCategorySelected(Realm realm) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<RealmCategory> results = realm.where(RealmCategory.class)
+                        .equalTo("isChild", true)
+                        .findAll();
+                if (results.size() > 0) {
+                    RealmCategory realmCategory = results.first();
+                    realmCategory.setSelected(true);
+                }
+            }
+        });
+    }
+
+    public static void changeCategorySelectedByCtgId(Realm realm, final String ctgId, final boolean isSelected) {
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<RealmCategory> results = realm.where(RealmCategory.class)
+                        .equalTo("ctgId", ctgId)
+                        .findAll();
+                if (results.size() > 0) {
+                    RealmCategory realmCategory = results.first();
+                    realmCategory.setSelected(isSelected);
+                }
+            }
+        });
     }
 }

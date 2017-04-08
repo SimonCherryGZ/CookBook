@@ -129,14 +129,18 @@ public class RecipeFragment extends Fragment implements RecipeView{
         }
         mAdapter.notifyDataSetChanged();
 
-        refreshLayout.finishRefreshing();
-        refreshLayout.finishLoadmore();
+        if (refreshLayout != null) {
+            refreshLayout.finishRefreshing();
+            refreshLayout.finishLoadmore();
+        }
     }
 
     @Override
     public void onQueryRecipeFailed() {
-        refreshLayout.finishRefreshing();
-        refreshLayout.finishLoadmore();
+        if (refreshLayout != null) {
+            refreshLayout.finishRefreshing();
+            refreshLayout.finishLoadmore();
+        }
     }
 
     private void init() {
