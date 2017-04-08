@@ -55,7 +55,6 @@ dependencies {
     compile 'com.lcodecorex:tkrefreshlayout:1.0.6'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.orhanobut:logger:1.15'
-    compile 'com.github.hackware1993:MagicIndicator:1.5.0'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'

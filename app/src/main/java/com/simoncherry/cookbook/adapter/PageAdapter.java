@@ -12,20 +12,27 @@ import java.util.ArrayList;
 
 public class PageAdapter extends FragmentPagerAdapter {
 
-    ArrayList<Fragment> mData;
+    ArrayList<Fragment> fragments;
+    ArrayList<String> titles;
 
-    public PageAdapter(FragmentManager fm, ArrayList<Fragment> data) {
+    public PageAdapter(FragmentManager fm, ArrayList<Fragment> fragments, ArrayList<String> titles) {
         super(fm);
-        mData = data;
+        this.fragments = fragments;
+        this.titles = titles;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return mData.get(position);
+        return fragments.get(position);
     }
 
     @Override
     public int getCount() {
-        return mData != null ? mData.size() : 0;
+        return fragments != null ? fragments.size() : 0;
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return titles.get(position);
     }
 }
