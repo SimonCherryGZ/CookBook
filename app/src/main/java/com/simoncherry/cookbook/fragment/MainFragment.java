@@ -9,6 +9,9 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -112,12 +115,81 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (layoutChannel.getVisibility() == View.GONE) {
-                    layoutChannel.setVisibility(View.VISIBLE);
+                    //iconRotateUp();
+                    channelLayoutExpand();
+                    //layoutChannel.setVisibility(View.VISIBLE);
                 } else {
-                    layoutChannel.setVisibility(View.GONE);
+                    //iconRotateDown();
+                    channelLayoutCollapse();
+                    //layoutChannel.setVisibility(View.GONE);
                 }
             }
         });
+    }
+
+    private void iconRotateUp() {
+        ivExpand.clearAnimation();
+        ivExpand.setColorFilter(getResources().getColor(R.color.white));
+        RotateAnimation rotateAnimation = new RotateAnimation(0, 180, ivExpand.getWidth()/2, ivExpand.getHeight()/2);
+        rotateAnimation.setDuration(300);
+        rotateAnimation.setFillAfter(true);
+        ivExpand.startAnimation(rotateAnimation);
+    }
+
+    private void iconRotateDown() {
+        ivExpand.clearAnimation();
+        ivExpand.clearColorFilter();
+        RotateAnimation rotateAnimation = new RotateAnimation(180, 0, ivExpand.getWidth()/2, ivExpand.getHeight()/2);
+        rotateAnimation.setDuration(300);
+        rotateAnimation.setFillAfter(true);
+        ivExpand.startAnimation(rotateAnimation);
+    }
+
+    private void channelLayoutExpand() {
+        layoutChannel.clearAnimation();
+        ScaleAnimation scaleAnimation = new ScaleAnimation(
+                1.0f, 1.0f, 0.0f, 1.0f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.0f);
+        scaleAnimation.setDuration(300);
+        scaleAnimation.setFillAfter(true);
+        scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                iconRotateUp();
+                layoutChannel.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        layoutChannel.startAnimation(scaleAnimation);
+    }
+
+    private void channelLayoutCollapse() {
+        layoutChannel.clearAnimation();
+        ScaleAnimation scaleAnimation = new ScaleAnimation(
+                1.0f, 1.0f, 1.0f, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.0f);
+        scaleAnimation.setDuration(300);
+        scaleAnimation.setFillAfter(true);
+        scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                iconRotateDown();
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                layoutChannel.clearAnimation();
+                layoutChannel.setVisibility(View.GONE);
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        layoutChannel.startAnimation(scaleAnimation);
     }
 
     private void initViewPager() {
@@ -133,6 +205,7 @@ public class MainFragment extends Fragment {
     }
 
     private void initChannelView() {
+        channelTagView.setColums(4);
         channelTagView.showPahtAnim(false);
         channelTagView.setOnChannelItemClicklistener(new OnChannelItemClicklistener() {
             @Override

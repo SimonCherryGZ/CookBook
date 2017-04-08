@@ -10,6 +10,6 @@
     <color name="item_tag_stokre_unavailable">#c8c9ca</color>
     <color name="item_tag_bg_unavailable">#338e8e91</color>
     <color name="item_tag_bg_unavailable_pre">#33000001</color>
-    <color name="category_banner_view_bg">#4ea6ed</color>
+    <color name="category_banner_view_bg">#3F51B5</color>
 
 </resources>

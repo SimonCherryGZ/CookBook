@@ -46,7 +46,7 @@ public class ChannelTagView extends LinearLayout {
     /**
      * 频道显示列数
      */
-    public int colums = 5;
+    public int colums = 4;
     /**
      * 频道显示行间距、列间距
      */
@@ -137,7 +137,7 @@ public class ChannelTagView extends LinearLayout {
         categoryUnAddedBannerBg = array.getResourceId(R.styleable.channel_tag_style_unAddedCategroyTitleBg, R.color.category_banner_view_bg);
         channelItemDragingBg = array.getResourceId(R.styleable.channel_tag_style_channelItemDragingBg, R.drawable.channel_item_draging);
         fixedPos = array.getInt(R.styleable.channel_tag_style_fixedPos, -1);
-        colums = array.getInt(R.styleable.channel_tag_style_colums, 5);
+        colums = array.getInt(R.styleable.channel_tag_style_colums, 4);
         columnSpace = array.getDimensionPixelOffset(R.styleable.channel_tag_style_columnSpace, 10);
         channelItemTxColor = array.getColor(R.styleable.channel_tag_style_channelItemTxColor, 0xff000000);
         channelItemTxSize = array.getDimensionPixelOffset(R.styleable.channel_tag_style_channelItemTxSize, 39);

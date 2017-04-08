@@ -6,11 +6,11 @@
     <TextView
         android:id="@+id/categray_added_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:background="@color/category_banner_view_bg"
         android:gravity="center_vertical"
         android:padding="10dp"
-        android:text="我的频道&#160;&#160;（左右滑动删除，长按拖动排序）"
+        android:text="首页显示&#160;&#160;（左右滑动删除，长按拖动排序）"
         android:textColor="#ffffff" />
 
     <android.support.v7.widget.RecyclerView
@@ -23,10 +23,11 @@
     <TextView
         android:id="@+id/categray_unadded_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:background="@color/category_banner_view_bg"
+        android:gravity="center_vertical"
         android:padding="10dp"
-        android:text="更多频道"
+        android:text="更多分类"
         android:textColor="#ffffff" />
 
     <android.support.v7.widget.RecyclerView
