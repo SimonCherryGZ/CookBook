@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.simoncherry.cookbook.R;
-import com.simoncherry.cookbook.adapter.CategoryAdapter;
+import com.simoncherry.cookbook.adapter.parentCategoryAdapter;
 import com.simoncherry.cookbook.component.DaggerCategoryComponent;
 import com.simoncherry.cookbook.model.MobCategory;
 import com.simoncherry.cookbook.model.MobCategoryChild1;
@@ -32,7 +32,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryView{
     @BindView(R.id.rv_category)
     RecyclerView rvCategory;
 
-    private CategoryAdapter mAdapter;
+    private parentCategoryAdapter mAdapter;
     private List<MobCategory> mData;
 
     private Context mContext;
@@ -72,8 +72,8 @@ public class CategoryActivity extends AppCompatActivity implements CategoryView{
 
     private void initRecyclerView() {
         mData = new ArrayList<>();
-        mAdapter = new CategoryAdapter(mContext, mData);
-        mAdapter.setOnItemClickListener(new CategoryAdapter.OnItemClickListener() {
+        mAdapter = new parentCategoryAdapter(mContext, mData);
+        mAdapter.setOnItemClickListener(new parentCategoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 //Toast.makeText(mContext, "click No." + position, Toast.LENGTH_SHORT).show();

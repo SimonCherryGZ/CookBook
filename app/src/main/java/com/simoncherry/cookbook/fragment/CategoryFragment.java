@@ -15,16 +15,12 @@ import android.view.ViewGroup;
 import com.orhanobut.logger.Logger;
 import com.simoncherry.cookbook.GridSpacingItemDecoration;
 import com.simoncherry.cookbook.R;
-import com.simoncherry.cookbook.adapter.CategoryAdapter;
-import com.simoncherry.cookbook.adapter.TagAdapter;
-import com.simoncherry.cookbook.component.DaggerCategoryComponent;
+import com.simoncherry.cookbook.adapter.childCategoryAdapter;
+import com.simoncherry.cookbook.adapter.parentCategoryAdapter;
 import com.simoncherry.cookbook.model.MobCategory;
-import com.simoncherry.cookbook.model.MobCategoryChild1;
-import com.simoncherry.cookbook.model.MobCategoryChild2;
-import com.simoncherry.cookbook.model.MobCategoryResult;
-import com.simoncherry.cookbook.module.CategoryModule;
+import com.simoncherry.cookbook.model.RealmCategory;
 import com.simoncherry.cookbook.presenter.impl.CategoryPresenterImpl;
-import com.simoncherry.cookbook.view.CategoryView;
+import com.simoncherry.cookbook.realm.RealmHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +30,14 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CategoryFragment extends Fragment implements CategoryView{
+public class CategoryFragment extends Fragment{
 
     private final static String TAG = CategoryFragment.class.getSimpleName();
 
@@ -47,11 +46,14 @@ public class CategoryFragment extends Fragment implements CategoryView{
     @BindView(R.id.rv_tag)
     RecyclerView rvTag;
 
-    private CategoryAdapter categoryAdapter;
-    private List<MobCategory> categoryList;
-    private TagAdapter tagAdapter;
-    private List<List<MobCategory>> allTagList;
-    private List<MobCategory> tagList;
+    private parentCategoryAdapter parentCategoryAdapter;
+    private List<MobCategory> parentList;
+    private childCategoryAdapter childCategoryAdapter;
+    private List<List<MobCategory>> allChildList;
+    private List<MobCategory> childList;
+
+    private Realm realm;
+    private RealmResults<RealmCategory> realmResults;
 
     private Context mContext;
     private Unbinder unbinder;
@@ -89,6 +91,8 @@ public class CategoryFragment extends Fragment implements CategoryView{
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        realmResults.removeAllChangeListeners();
+        realm.close();
         unbinder.unbind();
     }
 
@@ -115,89 +119,89 @@ public class CategoryFragment extends Fragment implements CategoryView{
         init();
     }
 
-    @Override
-    public void onQueryCategorySuccess(MobCategoryResult result) {
-        categoryList.clear();
-        allTagList.clear();
-        if (result != null) {
-//            resultList.add(result.getCategoryInfo());
-            // 第1层子类
-            ArrayList<MobCategoryChild1> child1 = result.getChilds();
-            if (child1 != null && child1.size() > 0) {
-                for (MobCategoryChild1 categoryChild1 : child1) {
-                    categoryList.add(categoryChild1.getCategoryInfo());
-                    // 第2层子类
-                    ArrayList<MobCategoryChild2> child2 = categoryChild1.getChilds();
-                    if (child2 != null && child2.size() > 0) {
-                        List<MobCategory> childList = new ArrayList<>();
-                        for (MobCategoryChild2 categoryChild2 : child2) {
-                            childList.add(categoryChild2.getCategoryInfo());
-                        }
-                        allTagList.add(childList);
-                    }
-                }
-                categoryList.get(0).setSelected(true);
-            }
-        }
-
-        if (allTagList != null && allTagList.size() > 0) {
-            Logger.t(TAG).e("allTagList: " + allTagList.toString());
-            tagList.clear();
-            tagList.addAll(allTagList.get(0));
-        }
-
-        categoryAdapter.notifyDataSetChanged();
-        tagAdapter.notifyDataSetChanged();
-    }
-
     public interface OnFragmentInteractionListener {
         void onClickCategory(String ctgId, String name);
     }
 
     private void init() {
-        initComponent();
         initRecyclerView();
-        categoryPresenter.queryCategory();
-    }
-
-    private void initComponent() {
-        DaggerCategoryComponent.builder()
-                .categoryModule(new CategoryModule(getActivity().getApplicationContext(), this))
-                .build()
-                .inject(this);
+        initRealm();
     }
 
     private void initRecyclerView() {
-        categoryList = new ArrayList<>();
-        categoryAdapter = new CategoryAdapter(mContext, categoryList);
-        categoryAdapter.setOnItemClickListener(new CategoryAdapter.OnItemClickListener() {
+        parentList = new ArrayList<>();
+        parentCategoryAdapter = new parentCategoryAdapter(mContext, parentList);
+        parentCategoryAdapter.setOnItemClickListener(new parentCategoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                if (allTagList.size() > position) {
-                    tagList.clear();
-                    tagList.addAll(allTagList.get(position));
-                    Logger.t(TAG).e("tagList: " + tagList.toString());
-                    tagAdapter.notifyDataSetChanged();
+                if (allChildList.size() > position) {
+                    childList.clear();
+                    childList.addAll(allChildList.get(position));
+                    Logger.t(TAG).e("childList: " + childList.toString());
+                    childCategoryAdapter.notifyDataSetChanged();
                 }
             }
         });
         rvCategory.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        rvCategory.setAdapter(categoryAdapter);
+        rvCategory.setAdapter(parentCategoryAdapter);
 
-        allTagList = new ArrayList<>();
-        tagList = new ArrayList<>();
-        tagAdapter = new TagAdapter(mContext, tagList);
-        tagAdapter.setOnItemClickListener(new TagAdapter.OnItemClickListener() {
+        allChildList = new ArrayList<>();
+        childList = new ArrayList<>();
+        childCategoryAdapter = new childCategoryAdapter(mContext, childList);
+        childCategoryAdapter.setOnItemClickListener(new childCategoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                if (tagList.size() > position) {
-                    onClickCategory(tagList.get(position).getCtgId(), tagList.get(position).getName());
+                if (childList.size() > position) {
+                    onClickCategory(childList.get(position).getCtgId(), childList.get(position).getName());
                 }
             }
         });
         rvTag.setLayoutManager(new GridLayoutManager(mContext, 3));
         rvTag.addItemDecoration(new GridSpacingItemDecoration(3, 20, true));
-        rvTag.setAdapter(tagAdapter);
+        rvTag.setAdapter(childCategoryAdapter);
+    }
+
+    private void initRealm() {
+        realm = Realm.getDefaultInstance();
+        realmResults = realm.where(RealmCategory.class).findAllAsync();
+        realmResults.addChangeListener(new RealmChangeListener<RealmResults<RealmCategory>>() {
+            @Override
+            public void onChange(RealmResults<RealmCategory> element) {
+                if (element.size() > 0) {
+                    handleRealmResult(element);
+                }
+            }
+        });
+    }
+
+    private void handleRealmResult(RealmResults<RealmCategory> element) {
+        RealmResults<RealmCategory> parentCategory = element.where().equalTo("isChild", false).findAll();
+        if (parentCategory != null) {
+            parentList.clear();
+            allChildList.clear();
+
+            for (RealmCategory category : parentCategory) {
+                parentList.add(RealmHelper.convertRealmCategoryToMobCategory(category));
+                RealmResults<RealmCategory> childCategory = element.where().equalTo("parentId", category.getCtgId()).findAll();
+                if (childCategory != null) {
+                    List<MobCategory> childList = new ArrayList<>();
+                    for (RealmCategory category1 : childCategory) {
+                        childList.add(RealmHelper.convertRealmCategoryToMobCategory(category1));
+                    }
+                    allChildList.add(childList);
+                }
+            }
+            parentList.get(0).setSelected(true);
+        }
+
+        if (allChildList != null && allChildList.size() > 0) {
+            Logger.t(TAG).e("allChildList: " + allChildList.toString());
+            childList.clear();
+            childList.addAll(allChildList.get(0));
+        }
+
+        parentCategoryAdapter.notifyDataSetChanged();
+        childCategoryAdapter.notifyDataSetChanged();
     }
 
     private void onClickCategory(String ctgId, String name) {

@@ -1,8 +1,11 @@
 package com.simoncherry.cookbook.realm;
 
+import com.simoncherry.cookbook.model.MobCategory;
+import com.simoncherry.cookbook.model.RealmCategory;
 import com.simoncherry.cookbook.model.RealmCollection;
 import com.simoncherry.cookbook.model.RealmHistory;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import io.realm.Realm;
@@ -101,5 +104,34 @@ public class RealmHelper {
                 }
             }
         });
+    }
+
+    public static RealmCategory convertMobCategoryToRealmCategory(MobCategory mobCategory, boolean isChild) {
+        RealmCategory realmCategory = new RealmCategory();
+        realmCategory.setCtgId(mobCategory.getCtgId());
+        realmCategory.setParentId(mobCategory.getParentId());
+        realmCategory.setName(mobCategory.getName());
+        realmCategory.setChild(isChild);
+        return realmCategory;
+    }
+
+    public static MobCategory convertRealmCategoryToMobCategory(RealmCategory realmCategory) {
+        MobCategory mobCategory = new MobCategory();
+        mobCategory.setCtgId(realmCategory.getCtgId());
+        mobCategory.setParentId(realmCategory.getParentId());
+        mobCategory.setName(realmCategory.getName());
+        return mobCategory;
+    }
+
+    public static void saveCategoryToRealm(Realm realm, List<RealmCategory> categoryList) {
+        for (RealmCategory category : categoryList) {
+            realm.copyToRealmOrUpdate(category);
+        }
+    }
+
+    public static RealmResults<RealmCategory> retrieveParentCategory(Realm realm) {
+        return realm.where(RealmCategory.class)
+                .equalTo("isChild", false)
+                .findAll();
     }
 }
