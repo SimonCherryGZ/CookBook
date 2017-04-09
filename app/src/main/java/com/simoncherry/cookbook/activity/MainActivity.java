@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.simoncherry.cookbook.MySuggestionProvider;
 import com.simoncherry.cookbook.R;
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity
     private HistoryFragment historyFragment;
     private RecipeFragment recipeFragment;
 
+    private long exitTime = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,12 +74,16 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            //super.onBackPressed();
             if (previousFragment instanceof CategoryFragment && currentFragment instanceof RecipeFragment){
                 backToFragment(currentFragment, previousFragment);
                 toolbar.setTitle(R.string.main_title_category);
             }else {
-                super.onBackPressed();
+                if ((System.currentTimeMillis() - exitTime) > 2000){
+                    Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                    exitTime = System.currentTimeMillis();
+                } else {
+                    super.onBackPressed();
+                }
             }
         }
     }

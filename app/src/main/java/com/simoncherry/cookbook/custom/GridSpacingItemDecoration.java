@@ -1,4 +1,4 @@
-package com.simoncherry.cookbook;
+package com.simoncherry.cookbook.custom;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

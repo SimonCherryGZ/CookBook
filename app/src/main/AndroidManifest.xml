@@ -39,8 +39,6 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity android:name=".activity.ApiTestActivity" />
-        <activity android:name=".activity.CategoryActivity" />
-        <activity android:name=".activity.RecipeActivity" />
         <activity
             android:name=".activity.DetailActivity"
             android:theme="@style/AppTheme.NoActionBar.Trans" />

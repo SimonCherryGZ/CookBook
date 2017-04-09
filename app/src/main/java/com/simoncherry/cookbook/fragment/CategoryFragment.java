@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.orhanobut.logger.Logger;
-import com.simoncherry.cookbook.GridSpacingItemDecoration;
+import com.simoncherry.cookbook.custom.GridSpacingItemDecoration;
 import com.simoncherry.cookbook.R;
 import com.simoncherry.cookbook.adapter.childCategoryAdapter;
 import com.simoncherry.cookbook.adapter.parentCategoryAdapter;

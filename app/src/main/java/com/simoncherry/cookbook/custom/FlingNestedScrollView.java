@@ -1,4 +1,4 @@
-package com.simoncherry.cookbook;
+package com.simoncherry.cookbook.custom;
 
 import android.content.Context;
 import android.support.v4.view.GestureDetectorCompat;

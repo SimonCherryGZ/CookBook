@@ -1,6 +1,5 @@
 package com.simoncherry.cookbook.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -76,17 +75,11 @@ public class ApiTestActivity extends AppCompatActivity implements ApiTestView {
         tvResult.setText(value.toString());
     }
 
-    private void startCategoryActivity() {
-        Intent intent = new Intent(this, CategoryActivity.class);
-        startActivity(intent);
-    }
-
     @OnClick({R.id.btn_query_category, R.id.btn_query_recipe, R.id.btn_query_detail})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_query_category:
-                //apiTestPresenter.queryCategory();
-                startCategoryActivity();
+                apiTestPresenter.queryCategory();
                 break;
             case R.id.btn_query_recipe:
                 apiTestPresenter.queryRecipe("0010001010", 1, 20);

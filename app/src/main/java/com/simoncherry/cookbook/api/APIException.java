@@ -1,4 +1,4 @@
-package com.simoncherry.cookbook;
+package com.simoncherry.cookbook.api;
 
 /**
  * Created by Simon on 2017/3/27.
