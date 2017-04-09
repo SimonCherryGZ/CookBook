@@ -20,47 +20,25 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.simoncherry.cookbook.MySuggestionProvider;
 import com.simoncherry.cookbook.R;
-import com.simoncherry.cookbook.component.DaggerCategoryComponent;
 import com.simoncherry.cookbook.fragment.CategoryFragment;
 import com.simoncherry.cookbook.fragment.CollectionFragment;
 import com.simoncherry.cookbook.fragment.HistoryFragment;
 import com.simoncherry.cookbook.fragment.MainFragment;
 import com.simoncherry.cookbook.fragment.RecipeFragment;
-import com.simoncherry.cookbook.model.MobCategoryChild1;
-import com.simoncherry.cookbook.model.MobCategoryChild2;
-import com.simoncherry.cookbook.model.MobCategoryResult;
-import com.simoncherry.cookbook.model.RealmCategory;
-import com.simoncherry.cookbook.module.CategoryModule;
-import com.simoncherry.cookbook.presenter.impl.CategoryPresenterImpl;
-import com.simoncherry.cookbook.realm.RealmHelper;
-import com.simoncherry.cookbook.view.CategoryView;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity
-        implements CategoryView, NavigationView.OnNavigationItemSelectedListener,
+        implements NavigationView.OnNavigationItemSelectedListener,
         CategoryFragment.OnFragmentInteractionListener{
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.iv_splash)
-    ImageView ivSplash;
 
     private Unbinder unbinder;
     private FragmentManager fragmentManager;
@@ -71,8 +49,6 @@ public class MainActivity extends AppCompatActivity
     private CollectionFragment collectionFragment;
     private HistoryFragment historyFragment;
     private RecipeFragment recipeFragment;
-    @Inject
-    CategoryPresenterImpl categoryPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,75 +189,6 @@ public class MainActivity extends AppCompatActivity
         toolbar.setTitle(name);
     }
 
-    @Override
-    public void onQueryCategorySuccess(MobCategoryResult result) {
-        handleCategoryResult(result);
-    }
-
-    private void handleCategoryResult(MobCategoryResult result) {
-        if (result != null) {
-            List<RealmCategory> categoryList = new ArrayList<>();
-            // 第1层子类
-            ArrayList<MobCategoryChild1> child1 = result.getChilds();
-            if (child1 != null && child1.size() > 0) {
-                for (MobCategoryChild1 categoryChild1 : child1) {
-                    categoryList.add(RealmHelper.convertMobCategoryToRealmCategory(categoryChild1.getCategoryInfo(), false));
-                    // 第2层子类
-                    ArrayList<MobCategoryChild2> child2 = categoryChild1.getChilds();
-                    if (child2 != null && child2.size() > 0) {
-                        for (MobCategoryChild2 categoryChild2 : child2) {
-                            categoryList.add(RealmHelper.convertMobCategoryToRealmCategory(categoryChild2.getCategoryInfo(), true));
-                        }
-                    }
-                }
-            }
-            saveCategoryToRealm(categoryList);
-        }
-    }
-
-    private void saveCategoryToRealm(final List<RealmCategory> categoryList) {
-        final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                RealmHelper.saveCategoryToRealm(realm, categoryList);
-            }
-        }, new Realm.Transaction.OnSuccess() {
-            @Override
-            public void onSuccess() {
-                realm.close();
-                initFragment();
-                splashImageFadeOut();
-            }
-        }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
-                realm.close();
-                initFragment();
-                splashImageFadeOut();
-                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void splashImageFadeOut() {
-        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.img_fade_out);
-        animation.setFillAfter(true);
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                ivSplash.setVisibility(View.GONE);
-            }
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
-        ivSplash.startAnimation(animation);
-    }
-
     private void onQueryRecipeByName(String name) {
         recipeFragment.queryRecipeByName(name);
         switchFragment(currentFragment, recipeFragment);
@@ -290,17 +197,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void init() {
-        initComponent();
         initView();
-        //initFragment();
-        categoryPresenter.queryCategory();
-    }
-
-    private void initComponent() {
-        DaggerCategoryComponent.builder()
-                .categoryModule(new CategoryModule(getApplicationContext(), this))
-                .build()
-                .inject(this);
+        initFragment();
     }
 
     private void initView() {
@@ -331,7 +229,7 @@ public class MainActivity extends AppCompatActivity
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        mainFragment = mainFragment.newInstance();
+        mainFragment = MainFragment.newInstance();
         recipeFragment = RecipeFragment.newInstance("0010001010");
         categoryFragment = CategoryFragment.newInstance();
         collectionFragment = CollectionFragment.newInstance();

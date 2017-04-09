@@ -2,6 +2,7 @@ package com.simoncherry.cookbook.component;
 
 import com.simoncherry.cookbook.activity.CategoryActivity;
 import com.simoncherry.cookbook.activity.MainActivity;
+import com.simoncherry.cookbook.activity.SplashActivity;
 import com.simoncherry.cookbook.fragment.CategoryFragment;
 import com.simoncherry.cookbook.module.CategoryModule;
 
@@ -15,4 +16,5 @@ public interface CategoryComponent {
     void inject(CategoryActivity categoryActivity);
     void inject(CategoryFragment categoryFragment);
     void inject(MainActivity mainActivity);
+    void inject(SplashActivity splashActivity);
 }

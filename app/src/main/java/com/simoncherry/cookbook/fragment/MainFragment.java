@@ -105,7 +105,6 @@ public class MainFragment extends Fragment {
         initView();
         initViewPager();
         initIndicator();
-        //initFragment();
         initChannelView();
         initRealm();
     }
@@ -115,13 +114,9 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (layoutChannel.getVisibility() == View.GONE) {
-                    //iconRotateUp();
                     channelLayoutExpand();
-                    //layoutChannel.setVisibility(View.VISIBLE);
                 } else {
-                    //iconRotateDown();
                     channelLayoutCollapse();
-                    //layoutChannel.setVisibility(View.GONE);
                 }
             }
         });
