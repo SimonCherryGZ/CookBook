@@ -10,7 +10,7 @@
         android:background="@color/category_banner_view_bg"
         android:gravity="center_vertical"
         android:padding="10dp"
-        android:text="首页显示&#160;&#160;（左右滑动删除，长按拖动排序）"
+        android:text="首页显示&#160;&#160;&#160;&#160;*左右滑动移除"
         android:textColor="#ffffff" />
 
     <android.support.v7.widget.RecyclerView
@@ -27,7 +27,7 @@
         android:background="@color/category_banner_view_bg"
         android:gravity="center_vertical"
         android:padding="10dp"
-        android:text="更多分类"
+        android:text="更多分类&#160;&#160;&#160;&#160;*点击添加到首页"
         android:textColor="#ffffff" />
 
     <android.support.v7.widget.RecyclerView

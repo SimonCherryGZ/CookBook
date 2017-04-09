@@ -165,7 +165,7 @@ public class ChannelTagView extends LinearLayout {
 
             @Override
             public boolean isLongPressDragEnabled() {
-                return true;
+                return false;
             }
 
             @Override
