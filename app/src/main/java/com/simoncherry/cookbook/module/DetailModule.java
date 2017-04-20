@@ -1,8 +1,7 @@
 package com.simoncherry.cookbook.module;
 
-import android.content.Context;
-
-import com.simoncherry.cookbook.view.DetailView;
+import com.simoncherry.cookbook.biz.DetailBiz;
+import com.simoncherry.cookbook.contract.DetailContract;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,21 +12,21 @@ import dagger.Provides;
 @Module
 public class DetailModule {
 
-    private Context mContext;
-    private DetailView mView;
+    private DetailBiz mBiz;
+    private DetailContract.View mView;
 
-    public DetailModule(Context mContext, DetailView mView) {
-        this.mContext = mContext;
+    public DetailModule(DetailBiz mBiz, DetailContract.View mView) {
+        this.mBiz = mBiz;
         this.mView = mView;
     }
 
     @Provides
-    Context provideContext() {
-        return mContext;
+    DetailBiz provideBiz() {
+        return mBiz;
     }
 
     @Provides
-    DetailView provideDetailView() {
+    DetailContract.View provideView() {
         return mView;
     }
 }

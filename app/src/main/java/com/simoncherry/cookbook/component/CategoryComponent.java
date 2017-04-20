@@ -1,6 +1,6 @@
 package com.simoncherry.cookbook.component;
 
-import com.simoncherry.cookbook.activity.SplashActivity;
+import com.simoncherry.cookbook.ui.activity.SplashActivity;
 import com.simoncherry.cookbook.module.CategoryModule;
 
 import dagger.Component;

@@ -1,8 +1,7 @@
 package com.simoncherry.cookbook.module;
 
-import android.content.Context;
-
-import com.simoncherry.cookbook.view.ApiTestView;
+import com.simoncherry.cookbook.biz.ApiTestBiz;
+import com.simoncherry.cookbook.contract.ApiTestContract;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,21 +12,21 @@ import dagger.Provides;
 @Module
 public class ApiTestModule {
 
-    private Context mContext;
-    private ApiTestView mView;
+    private ApiTestBiz mBiz;
+    private ApiTestContract.View mView;
 
-    public ApiTestModule(Context mContext, ApiTestView mView) {
-        this.mContext = mContext;
+    public ApiTestModule(ApiTestBiz mBiz, ApiTestContract.View mView) {
+        this.mBiz = mBiz;
         this.mView = mView;
     }
 
     @Provides
-    Context provideContext() {
-        return mContext;
+    ApiTestBiz provideBiz() {
+        return mBiz;
     }
 
     @Provides
-    ApiTestView provideApiTestView() {
+    ApiTestContract.View provideView() {
         return mView;
     }
 }

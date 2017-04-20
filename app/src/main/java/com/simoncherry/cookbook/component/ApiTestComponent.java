@@ -1,6 +1,6 @@
 package com.simoncherry.cookbook.component;
 
-import com.simoncherry.cookbook.activity.ApiTestActivity;
+import com.simoncherry.cookbook.ui.activity.ApiTestActivity;
 import com.simoncherry.cookbook.module.ApiTestModule;
 
 import dagger.Component;

@@ -1,6 +1,6 @@
 package com.simoncherry.cookbook.component;
 
-import com.simoncherry.cookbook.fragment.RecipeFragment;
+import com.simoncherry.cookbook.ui.fragment.RecipeFragment;
 import com.simoncherry.cookbook.module.RecipeModule;
 
 import dagger.Component;
