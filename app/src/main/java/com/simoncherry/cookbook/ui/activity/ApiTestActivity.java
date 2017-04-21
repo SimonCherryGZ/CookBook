@@ -1,7 +1,6 @@
 package com.simoncherry.cookbook.ui.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -9,22 +8,20 @@ import android.widget.Toast;
 
 import com.simoncherry.cookbook.R;
 import com.simoncherry.cookbook.biz.ApiTestBiz;
-import com.simoncherry.cookbook.component.DaggerApiTestComponent;
 import com.simoncherry.cookbook.contract.ApiTestContract;
+import com.simoncherry.cookbook.di.component.DaggerApiTestComponent;
+import com.simoncherry.cookbook.di.module.ApiTestModule;
 import com.simoncherry.cookbook.model.MobCategoryResult;
 import com.simoncherry.cookbook.model.MobRecipe;
 import com.simoncherry.cookbook.model.MobRecipeResult;
-import com.simoncherry.cookbook.module.ApiTestModule;
 import com.simoncherry.cookbook.presenter.ApiTestPresenter;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
-public class ApiTestActivity extends AppCompatActivity implements ApiTestContract.View {
+public class ApiTestActivity extends BaseActivity implements ApiTestContract.View {
 
     @BindView(R.id.tv_result)
     TextView tvResult;
@@ -35,31 +32,31 @@ public class ApiTestActivity extends AppCompatActivity implements ApiTestContrac
     @BindView(R.id.btn_query_detail)
     Button btnQueryDetail;
 
-    private Unbinder unbinder;
     @Inject
     ApiTestPresenter apiTestPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_api_test);
-        unbinder = ButterKnife.bind(this);
-
-        init();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
     }
 
-    private void init() {
+    @Override
+    protected void initComponent() {
         //apiTestPresenter = new ApiTestPresenterImpl(getApplicationContext(), this);
         DaggerApiTestComponent.builder()
                 .apiTestModule(new ApiTestModule(new ApiTestBiz(), this))
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    protected int getLayout() {
+        return R.layout.activity_api_test;
     }
 
     @Override

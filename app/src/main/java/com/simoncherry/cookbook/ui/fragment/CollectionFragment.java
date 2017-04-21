@@ -1,29 +1,24 @@
 package com.simoncherry.cookbook.ui.fragment;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.kogitune.activity_transition.ActivityTransitionLauncher;
 import com.simoncherry.cookbook.R;
+import com.simoncherry.cookbook.model.RealmCollection;
 import com.simoncherry.cookbook.ui.activity.DetailActivity;
 import com.simoncherry.cookbook.ui.adapter.CollectionAdapter;
-import com.simoncherry.cookbook.model.RealmCollection;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
@@ -34,16 +29,13 @@ import io.realm.Sort;
  * Use the {@link CollectionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CollectionFragment extends Fragment {
+public class CollectionFragment extends BaseFragment {
 
     @BindView(R.id.rv_recipe)
     RecyclerView rvRecipe;
 
     private CollectionAdapter mAdapter;
     private List<RealmCollection> mData;
-
-    private Context mContext;
-    private Unbinder unbinder;
 
     private Realm realm;
     private RealmResults<RealmCollection> realmResults;
@@ -63,16 +55,6 @@ public class CollectionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getActivity();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_collection, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
     }
 
     @Override
@@ -80,7 +62,15 @@ public class CollectionFragment extends Fragment {
         super.onDestroyView();
         realmResults.removeAllChangeListeners();
         realm.close();
-        unbinder.unbind();
+    }
+
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_collection;
+    }
+
+    @Override
+    protected void initComponent() {
     }
 
     @Override

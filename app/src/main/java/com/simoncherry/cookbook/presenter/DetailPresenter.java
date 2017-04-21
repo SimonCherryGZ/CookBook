@@ -11,7 +11,7 @@ import javax.inject.Inject;
  * Created by Simon on 2017/3/30.
  */
 
-public class DetailPresenter implements DetailContract.Presenter{
+public class DetailPresenter extends BasePresenter implements DetailContract.Presenter{
 
     private DetailBiz mBiz;
     private DetailContract.View mView;

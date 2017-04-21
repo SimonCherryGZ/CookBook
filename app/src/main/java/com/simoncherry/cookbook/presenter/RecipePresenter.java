@@ -11,7 +11,7 @@ import javax.inject.Inject;
  * Created by Simon on 2017/3/29.
  */
 
-public class RecipePresenter implements RecipeContract.Presenter{
+public class RecipePresenter extends BasePresenter implements RecipeContract.Presenter{
 
     private RecipeBiz mBiz;
     private RecipeContract.View mView;

@@ -6,9 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
@@ -17,9 +15,9 @@ import android.widget.ImageView;
 
 import com.orhanobut.logger.Logger;
 import com.simoncherry.cookbook.R;
-import com.simoncherry.cookbook.ui.adapter.MainFragmentAdapter;
 import com.simoncherry.cookbook.model.RealmCategory;
 import com.simoncherry.cookbook.realm.RealmHelper;
+import com.simoncherry.cookbook.ui.adapter.MainFragmentAdapter;
 import com.zhl.channeltagview.bean.ChannelItem;
 import com.zhl.channeltagview.listener.OnChannelItemClicklistener;
 import com.zhl.channeltagview.listener.UserActionListener;
@@ -28,8 +26,6 @@ import com.zhl.channeltagview.view.ChannelTagView;
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
@@ -37,7 +33,7 @@ import io.realm.RealmResults;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainFragment extends Fragment {
+public class MainFragment extends BaseFragment {
 
     private final static String TAG = MainFragment.class.getSimpleName();
 
@@ -51,8 +47,6 @@ public class MainFragment extends Fragment {
     FrameLayout layoutChannel;
     @BindView(R.id.channel_tag_view)
     ChannelTagView channelTagView;
-
-    private Unbinder unbinder;
 
     private MainFragmentAdapter mainFragmentAdapter;
     private ArrayList<Fragment> fragmentList;
@@ -79,20 +73,19 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_page, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         realmResults.removeAllChangeListeners();
         realm.close();
-        unbinder.unbind();
+    }
+
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_page;
+    }
+
+    @Override
+    protected void initComponent() {
     }
 
     @Override

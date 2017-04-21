@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -31,17 +30,14 @@ import com.simoncherry.cookbook.ui.fragment.MainFragment;
 import com.simoncherry.cookbook.ui.fragment.RecipeFragment;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         CategoryFragment.OnFragmentInteractionListener{
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    private Unbinder unbinder;
     private FragmentManager fragmentManager;
     private Fragment currentFragment;
     private Fragment previousFragment = null;
@@ -56,8 +52,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        unbinder = ButterKnife.bind(this);
 
         init();
     }
@@ -65,7 +59,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
+    }
+
+    @Override
+    protected void initComponent() {
+    }
+
+    @Override
+    protected int getLayout() {
+        return R.layout.activity_main;
     }
 
     @Override

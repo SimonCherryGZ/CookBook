@@ -1,7 +1,7 @@
-package com.simoncherry.cookbook.component;
+package com.simoncherry.cookbook.di.component;
 
 import com.simoncherry.cookbook.ui.activity.DetailActivity;
-import com.simoncherry.cookbook.module.DetailModule;
+import com.simoncherry.cookbook.di.module.DetailModule;
 
 import dagger.Component;
 

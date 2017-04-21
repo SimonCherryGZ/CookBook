@@ -15,7 +15,7 @@ import javax.inject.Inject;
  * Created by Simon on 2017/3/28.
  */
 
-public class ApiTestPresenter implements ApiTestContract.Presenter {
+public class ApiTestPresenter extends BasePresenter implements ApiTestContract.Presenter {
 
     private ApiTestBiz apiTestBiz;
     private ApiTestContract.View apiTestView;

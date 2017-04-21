@@ -8,9 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.orhanobut.logger.Logger;
 import com.simoncherry.cookbook.R;
@@ -25,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
@@ -34,7 +29,7 @@ import io.realm.RealmResults;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CategoryFragment extends Fragment{
+public class CategoryFragment extends BaseFragment{
 
     private final static String TAG = CategoryFragment.class.getSimpleName();
 
@@ -52,9 +47,6 @@ public class CategoryFragment extends Fragment{
     private Realm realm;
     private RealmResults<RealmCategory> realmResults;
 
-    private Context mContext;
-    private Unbinder unbinder;
-
     private OnFragmentInteractionListener mListener;
 
     public CategoryFragment() {
@@ -71,16 +63,15 @@ public class CategoryFragment extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getActivity();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_category, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
+    protected int getLayout() {
+        return R.layout.fragment_category;
+    }
+
+    @Override
+    protected void initComponent() {
     }
 
     @Override
@@ -88,7 +79,6 @@ public class CategoryFragment extends Fragment{
         super.onDestroyView();
         realmResults.removeAllChangeListeners();
         realm.close();
-        unbinder.unbind();
     }
 
     @Override

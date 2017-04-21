@@ -11,7 +11,7 @@ import javax.inject.Inject;
  * Created by Simon on 2017/3/29.
  */
 
-public class CategoryPresenter implements CategoryContract.Presenter{
+public class CategoryPresenter extends BasePresenter implements CategoryContract.Presenter{
 
     private CategoryBiz mBiz;
     private CategoryContract.View mView;

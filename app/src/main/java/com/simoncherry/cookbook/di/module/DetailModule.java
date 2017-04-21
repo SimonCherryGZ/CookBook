@@ -1,4 +1,4 @@
-package com.simoncherry.cookbook.module;
+package com.simoncherry.cookbook.di.module;
 
 import com.simoncherry.cookbook.biz.DetailBiz;
 import com.simoncherry.cookbook.contract.DetailContract;

@@ -2,18 +2,17 @@ package com.simoncherry.cookbook.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.simoncherry.cookbook.R;
 import com.simoncherry.cookbook.biz.CategoryBiz;
-import com.simoncherry.cookbook.component.DaggerCategoryComponent;
 import com.simoncherry.cookbook.contract.CategoryContract;
+import com.simoncherry.cookbook.di.component.DaggerCategoryComponent;
+import com.simoncherry.cookbook.di.module.CategoryModule;
 import com.simoncherry.cookbook.model.MobCategoryChild1;
 import com.simoncherry.cookbook.model.MobCategoryChild2;
 import com.simoncherry.cookbook.model.MobCategoryResult;
 import com.simoncherry.cookbook.model.RealmCategory;
-import com.simoncherry.cookbook.module.CategoryModule;
 import com.simoncherry.cookbook.presenter.CategoryPresenter;
 import com.simoncherry.cookbook.realm.RealmHelper;
 
@@ -24,7 +23,7 @@ import javax.inject.Inject;
 
 import io.realm.Realm;
 
-public class SplashActivity extends AppCompatActivity implements CategoryContract.View{
+public class SplashActivity extends BaseActivity implements CategoryContract.View{
 
     @Inject
     CategoryPresenter categoryPresenter;
@@ -32,17 +31,17 @@ public class SplashActivity extends AppCompatActivity implements CategoryContrac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
 
         init();
     }
 
-    private void init() {
-        initComponent();
-        categoryPresenter.queryCategory();
+    @Override
+    protected int getLayout() {
+        return R.layout.activity_splash;
     }
 
-    private void initComponent() {
+    @Override
+    protected void initComponent() {
         DaggerCategoryComponent.builder()
                 .categoryModule(new CategoryModule(new CategoryBiz(), this))
                 .build()
@@ -65,6 +64,10 @@ public class SplashActivity extends AppCompatActivity implements CategoryContrac
 
     @Override
     public void onQueryError(String msg) {
+    }
+
+    private void init() {
+        categoryPresenter.queryCategory();
     }
 
     private void handleCategoryResult(MobCategoryResult result) {
