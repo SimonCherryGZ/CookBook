@@ -122,7 +122,7 @@ public class CategoryFragment extends BaseFragment{
                 if (allChildList.size() > position) {
                     childList.clear();
                     childList.addAll(allChildList.get(position));
-                    Logger.t(TAG).e("childList: " + childList.toString());
+                    Logger.t(TAG).i("childList: " + childList.toString());
                     childCategoryAdapter.notifyDataSetChanged();
                 }
             }
@@ -180,7 +180,7 @@ public class CategoryFragment extends BaseFragment{
         }
 
         if (allChildList != null && allChildList.size() > 0) {
-            Logger.t(TAG).e("allChildList: " + allChildList.toString());
+            Logger.t(TAG).i("allChildList: " + allChildList.toString());
             childList.clear();
             childList.addAll(allChildList.get(0));
         }

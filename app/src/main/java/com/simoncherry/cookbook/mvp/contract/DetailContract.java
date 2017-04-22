@@ -1,4 +1,4 @@
-package com.simoncherry.cookbook.contract;
+package com.simoncherry.cookbook.mvp.contract;
 
 import com.simoncherry.cookbook.model.MobRecipe;
 

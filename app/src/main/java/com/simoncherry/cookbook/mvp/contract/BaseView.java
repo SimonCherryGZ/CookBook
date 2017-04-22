@@ -1,4 +1,4 @@
-package com.simoncherry.cookbook.contract;
+package com.simoncherry.cookbook.mvp.contract;
 
 /**
  * Created by Simon on 2017/4/19.
@@ -6,6 +6,8 @@ package com.simoncherry.cookbook.contract;
 
 public interface BaseView<T> {
     void setPresenter(T presenter);
-    void onQueryFailed();
+    void onQueryEmpty();
     void onQueryError(String msg);
+    void onShowProgressBar();
+    void onHideProgressBar();
 }

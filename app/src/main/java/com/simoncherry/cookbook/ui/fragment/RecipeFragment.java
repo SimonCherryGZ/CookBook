@@ -13,13 +13,13 @@ import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.orhanobut.logger.Logger;
 import com.simoncherry.cookbook.R;
-import com.simoncherry.cookbook.biz.RecipeBiz;
-import com.simoncherry.cookbook.contract.RecipeContract;
+import com.simoncherry.cookbook.mvp.biz.RecipeBiz;
+import com.simoncherry.cookbook.mvp.contract.RecipeContract;
 import com.simoncherry.cookbook.di.component.DaggerRecipeComponent;
 import com.simoncherry.cookbook.di.module.RecipeModule;
 import com.simoncherry.cookbook.model.MobRecipe;
 import com.simoncherry.cookbook.model.MobRecipeResult;
-import com.simoncherry.cookbook.presenter.RecipePresenter;
+import com.simoncherry.cookbook.mvp.presenter.RecipePresenter;
 import com.simoncherry.cookbook.ui.activity.DetailActivity;
 import com.simoncherry.cookbook.ui.adapter.RecipeAdapter;
 
@@ -122,7 +122,8 @@ public class RecipeFragment extends BaseFragment implements RecipeContract.View{
     }
 
     @Override
-    public void onQueryFailed() {
+    public void onQueryEmpty() {
+        Toast.makeText(mContext, "查询结果为空", Toast.LENGTH_SHORT).show();
         if (refreshLayout != null) {
             refreshLayout.finishRefreshing();
             refreshLayout.finishLoadmore();
@@ -131,10 +132,21 @@ public class RecipeFragment extends BaseFragment implements RecipeContract.View{
 
     @Override
     public void onQueryError(String msg) {
+        Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
         if (refreshLayout != null) {
             refreshLayout.finishRefreshing();
             refreshLayout.finishLoadmore();
         }
+    }
+
+    @Override
+    public void onShowProgressBar() {
+        showProgressBar();
+    }
+
+    @Override
+    public void onHideProgressBar() {
+        hideProgressBar();
     }
 
     private void init() {
@@ -179,7 +191,7 @@ public class RecipeFragment extends BaseFragment implements RecipeContract.View{
     }
 
     private void queryRecipe(String ctgId, int currentPage) {
-        Logger.t(TAG).e("RecipeFragment: " + RecipeFragment.this.hashCode() + "  |  currentPage: " + currentPage);
+        Logger.t(TAG).i("RecipeFragment: " + RecipeFragment.this.hashCode() + "  |  currentPage: " + currentPage);
         if (ctgId != null) {
             recipePresenter.queryRecipe(ctgId, currentPage, PAGE_SIZE);
         } else {
@@ -205,7 +217,7 @@ public class RecipeFragment extends BaseFragment implements RecipeContract.View{
     }
 
     private void queryRecipeByField(String field, String value, int currentPage) {
-        Logger.t(TAG).e("RecipeFragment: " + RecipeFragment.this.hashCode() + "  |  currentPage: " + currentPage);
+        Logger.t(TAG).i("RecipeFragment: " + RecipeFragment.this.hashCode() + "  |  currentPage: " + currentPage);
         if (ctgId != null) {
             recipePresenter.queryRecipeByField(field, value, currentPage, PAGE_SIZE);
         } else {

@@ -30,17 +30,17 @@ import com.google.gson.reflect.TypeToken;
 import com.kogitune.activity_transition.ActivityTransition;
 import com.kogitune.activity_transition.ExitActivityTransition;
 import com.simoncherry.cookbook.R;
-import com.simoncherry.cookbook.biz.DetailBiz;
-import com.simoncherry.cookbook.di.component.DaggerDetailComponent;
-import com.simoncherry.cookbook.contract.DetailContract;
 import com.simoncherry.cookbook.databinding.ActivityDetailBinding;
+import com.simoncherry.cookbook.di.component.DaggerDetailComponent;
+import com.simoncherry.cookbook.di.module.DetailModule;
 import com.simoncherry.cookbook.model.MobRecipe;
 import com.simoncherry.cookbook.model.MobRecipeDetail;
 import com.simoncherry.cookbook.model.MobRecipeMethod;
 import com.simoncherry.cookbook.model.RealmCollection;
 import com.simoncherry.cookbook.model.RealmHistory;
-import com.simoncherry.cookbook.di.module.DetailModule;
-import com.simoncherry.cookbook.presenter.DetailPresenter;
+import com.simoncherry.cookbook.mvp.biz.DetailBiz;
+import com.simoncherry.cookbook.mvp.contract.DetailContract;
+import com.simoncherry.cookbook.mvp.presenter.DetailPresenter;
 import com.simoncherry.cookbook.realm.RealmHelper;
 import com.simoncherry.cookbook.ui.adapter.MethodAdapter;
 import com.simoncherry.cookbook.util.ImageLoaderUtils;
@@ -86,7 +86,7 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailContr
     @BindView(R.id.rv_method)
     RecyclerView rvMethod;
 
-
+    private final static String TAG = DetailActivity.class.getSimpleName();
     public final static String KEY_RECIPE_ID = "recipeId";
     public final static String KEY_THUMBNAIL = "thumbnail";
 
@@ -348,12 +348,22 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailContr
     }
 
     @Override
-    public void onQueryFailed() {
-        Toast.makeText(this, "value is null", Toast.LENGTH_SHORT).show();
+    public void onQueryEmpty() {
+        Toast.makeText(this, "查询结果为空", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onQueryError(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onShowProgressBar() {
+        showProgressBar();
+    }
+
+    @Override
+    public void onHideProgressBar() {
+        hideProgressBar();
     }
 }

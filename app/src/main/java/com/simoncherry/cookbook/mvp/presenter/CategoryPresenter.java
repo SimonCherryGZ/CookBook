@@ -1,8 +1,8 @@
-package com.simoncherry.cookbook.presenter;
+package com.simoncherry.cookbook.mvp.presenter;
 
-import com.simoncherry.cookbook.biz.CategoryBiz;
+import com.simoncherry.cookbook.mvp.biz.CategoryBiz;
 import com.simoncherry.cookbook.api.ApiCallback;
-import com.simoncherry.cookbook.contract.CategoryContract;
+import com.simoncherry.cookbook.mvp.contract.CategoryContract;
 import com.simoncherry.cookbook.model.MobCategoryResult;
 
 import javax.inject.Inject;
@@ -32,13 +32,23 @@ public class CategoryPresenter extends BasePresenter implements CategoryContract
     public void queryCategory() {
         mBiz.queryCategory(new ApiCallback.QueryCategoryCallback() {
             @Override
+            public void onStart() {
+                mView.onShowProgressBar();
+            }
+
+            @Override
+            public void onEnd() {
+                mView.onHideProgressBar();
+            }
+
+            @Override
             public void onQueryCategorySuccess(MobCategoryResult value) {
                 mView.onQueryCategorySuccess(value);
             }
 
             @Override
-            public void onQueryFailed() {
-                mView.onQueryFailed();
+            public void onQueryCategoryEmpty() {
+                mView.onQueryEmpty();
             }
 
             @Override

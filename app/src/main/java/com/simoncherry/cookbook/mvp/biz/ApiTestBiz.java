@@ -1,19 +1,19 @@
-package com.simoncherry.cookbook.biz;
+package com.simoncherry.cookbook.mvp.biz;
 
 import com.simoncherry.cookbook.api.ApiCallback;
 import com.simoncherry.cookbook.api.MobAPIService;
-import com.simoncherry.cookbook.model.MobAPIResultFunc;
 import com.simoncherry.cookbook.model.MobCategoryResult;
 import com.simoncherry.cookbook.model.MobRecipe;
 import com.simoncherry.cookbook.model.MobRecipeResult;
+import com.simoncherry.cookbook.rx.MobAPIResultFunc;
+import com.simoncherry.cookbook.rx.RxSchedulersHelper;
+import com.simoncherry.cookbook.rx.RxSubscriber;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Simon on 2017/4/19.
@@ -27,29 +27,21 @@ public class ApiTestBiz extends BaseBiz implements ApiCallback {
         MobAPIService.getMobAPI()
                 .queryCategory(MobAPIService.MOB_API_KEY)
                 .map(new MobAPIResultFunc<MobCategoryResult>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MobCategoryResult>() {
+                .compose(RxSchedulersHelper.<MobCategoryResult>io_main())
+                .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void accept(Disposable disposable) throws Exception {
+                        callback.onStart();
                     }
-
+                })
+                .subscribe(new RxSubscriber<MobCategoryResult>(callback) {
                     @Override
                     public void onNext(MobCategoryResult value) {
                         if (value != null) {
                             callback.onQueryCategorySuccess(value);
                         } else {
-                            callback.onQueryFailed();
+                            callback.onQueryCategoryEmpty();
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        callback.onQueryError(e.toString());
-                    }
-
-                    @Override
-                    public void onComplete() {
                     }
                 });
     }
@@ -66,31 +58,24 @@ public class ApiTestBiz extends BaseBiz implements ApiCallback {
         MobAPIService.getMobAPI()
                 .queryRecipe(params)
                 .map(new MobAPIResultFunc<MobRecipeResult>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MobRecipeResult>() {
+                .compose(RxSchedulersHelper.<MobRecipeResult>io_main())
+                .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void accept(Disposable disposable) throws Exception {
+                        callback.onStart();
                     }
-
+                })
+                .subscribe(new RxSubscriber<MobRecipeResult>(callback) {
                     @Override
                     public void onNext(MobRecipeResult value) {
                         if (value != null) {
                             callback.onQueryRecipeSuccess(value);
                         } else {
-                            callback.onQueryFailed();
+                            callback.onQueryRecipeEmpty();
                         }
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        callback.onQueryError(e.toString());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
                 });
+
     }
 
     public void queryDetail(String id, final QueryDetailCallback callback) {
@@ -103,29 +88,21 @@ public class ApiTestBiz extends BaseBiz implements ApiCallback {
         MobAPIService.getMobAPI()
                 .queryDetail(params)
                 .map(new MobAPIResultFunc<MobRecipe>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MobRecipe>() {
+                .compose(RxSchedulersHelper.<MobRecipe>io_main())
+                .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void accept(Disposable disposable) throws Exception {
+                        callback.onStart();
                     }
-
+                })
+                .subscribe(new RxSubscriber<MobRecipe>(callback) {
                     @Override
                     public void onNext(MobRecipe value) {
                         if (value != null) {
                             callback.onQueryDetailSuccess(value);
                         } else {
-                            callback.onQueryFailed();
+                            callback.onQueryDetailEmpty();
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        callback.onQueryError(e.toString());
-                    }
-
-                    @Override
-                    public void onComplete() {
                     }
                 });
     }

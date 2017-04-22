@@ -227,7 +227,7 @@ public class MainFragment extends BaseFragment {
                 .equalTo("isChild", true)
                 .equalTo("isSelected", true)
                 .findAll().size() == 0) {
-            Logger.t(TAG).e("set first category selected");
+            Logger.t(TAG).i("set first category selected");
             RealmHelper.setFirstChildCategorySelected(realm);
         }
 
@@ -237,7 +237,7 @@ public class MainFragment extends BaseFragment {
         realmResults.addChangeListener(new RealmChangeListener<RealmResults<RealmCategory>>() {
             @Override
             public void onChange(RealmResults<RealmCategory> element) {
-                Logger.t(TAG).e("RealmCategory: " + element.toString());
+                Logger.t(TAG).i("RealmCategory: " + element.toString());
                 if (element.size() > 0) {
                     handleRealmResult(element);
                 }
@@ -263,8 +263,8 @@ public class MainFragment extends BaseFragment {
                 unAddedChannels.add(convertCategoryToChannel(i, realmCategory));
             }
         }
-        Logger.t(TAG).e("addedChannels: " + addedChannels.toString());
-        Logger.t(TAG).e("unAddedChannels: " + unAddedChannels.toString());
+        Logger.t(TAG).i("addedChannels: " + addedChannels.toString());
+        Logger.t(TAG).i("unAddedChannels: " + unAddedChannels.toString());
         if (!isInit) {
             isInit = true;
             channelTagView.initChannels(addedChannels, unAddedChannels, null);

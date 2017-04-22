@@ -1,4 +1,4 @@
-package com.simoncherry.cookbook.biz;
+package com.simoncherry.cookbook.mvp.biz;
 
 /**
  * Created by Simon on 2017/4/19.

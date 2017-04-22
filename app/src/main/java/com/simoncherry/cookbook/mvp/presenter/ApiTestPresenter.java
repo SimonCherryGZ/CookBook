@@ -1,10 +1,10 @@
-package com.simoncherry.cookbook.presenter;
+package com.simoncherry.cookbook.mvp.presenter;
 
 import android.support.annotation.NonNull;
 
-import com.simoncherry.cookbook.biz.ApiTestBiz;
+import com.simoncherry.cookbook.mvp.biz.ApiTestBiz;
 import com.simoncherry.cookbook.api.ApiCallback;
-import com.simoncherry.cookbook.contract.ApiTestContract;
+import com.simoncherry.cookbook.mvp.contract.ApiTestContract;
 import com.simoncherry.cookbook.model.MobCategoryResult;
 import com.simoncherry.cookbook.model.MobRecipe;
 import com.simoncherry.cookbook.model.MobRecipeResult;
@@ -36,13 +36,23 @@ public class ApiTestPresenter extends BasePresenter implements ApiTestContract.P
     public void queryCategory() {
         apiTestBiz.queryCategory(new ApiCallback.QueryCategoryCallback() {
             @Override
+            public void onStart() {
+                apiTestView.onShowProgressBar();
+            }
+
+            @Override
+            public void onEnd() {
+                apiTestView.onHideProgressBar();
+            }
+
+            @Override
             public void onQueryCategorySuccess(MobCategoryResult value) {
                 apiTestView.onQueryCategorySuccess(value);
             }
 
             @Override
-            public void onQueryFailed() {
-                apiTestView.onQueryFailed();
+            public void onQueryCategoryEmpty() {
+                apiTestView.onQueryEmpty();
             }
 
             @Override
@@ -56,13 +66,23 @@ public class ApiTestPresenter extends BasePresenter implements ApiTestContract.P
     public void queryRecipe(String cid, int page, int size) {
         apiTestBiz.queryRecipe(cid, page, size, new ApiCallback.QueryRecipeCallback() {
             @Override
+            public void onStart() {
+                apiTestView.onShowProgressBar();
+            }
+
+            @Override
+            public void onEnd() {
+                apiTestView.onHideProgressBar();
+            }
+
+            @Override
             public void onQueryRecipeSuccess(MobRecipeResult value) {
                 apiTestView.onQueryRecipe(value);
             }
 
             @Override
-            public void onQueryFailed() {
-                apiTestView.onQueryFailed();
+            public void onQueryRecipeEmpty() {
+                apiTestView.onQueryEmpty();
             }
 
             @Override
@@ -76,13 +96,23 @@ public class ApiTestPresenter extends BasePresenter implements ApiTestContract.P
     public void queryDetail(String id) {
         apiTestBiz.queryDetail(id, new ApiCallback.QueryDetailCallback() {
             @Override
+            public void onStart() {
+                apiTestView.onShowProgressBar();
+            }
+
+            @Override
+            public void onEnd() {
+                apiTestView.onHideProgressBar();
+            }
+
+            @Override
             public void onQueryDetailSuccess(MobRecipe value) {
                 apiTestView.onQueryDetail(value);
             }
 
             @Override
-            public void onQueryFailed() {
-                apiTestView.onQueryFailed();
+            public void onQueryDetailEmpty() {
+                apiTestView.onQueryEmpty();
             }
 
             @Override

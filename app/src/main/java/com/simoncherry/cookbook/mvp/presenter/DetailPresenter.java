@@ -1,8 +1,8 @@
-package com.simoncherry.cookbook.presenter;
+package com.simoncherry.cookbook.mvp.presenter;
 
-import com.simoncherry.cookbook.biz.DetailBiz;
+import com.simoncherry.cookbook.mvp.biz.DetailBiz;
 import com.simoncherry.cookbook.api.ApiCallback;
-import com.simoncherry.cookbook.contract.DetailContract;
+import com.simoncherry.cookbook.mvp.contract.DetailContract;
 import com.simoncherry.cookbook.model.MobRecipe;
 
 import javax.inject.Inject;
@@ -32,13 +32,23 @@ public class DetailPresenter extends BasePresenter implements DetailContract.Pre
     public void queryDetail(String id) {
         mBiz.queryDetail(id, new ApiCallback.QueryDetailCallback() {
             @Override
+            public void onStart() {
+                mView.onShowProgressBar();
+            }
+
+            @Override
+            public void onEnd() {
+                mView.onHideProgressBar();
+            }
+
+            @Override
             public void onQueryDetailSuccess(MobRecipe value) {
                 mView.onQueryDetailSuccess(value);
             }
 
             @Override
-            public void onQueryFailed() {
-                mView.onQueryFailed();
+            public void onQueryDetailEmpty() {
+                mView.onQueryEmpty();
             }
 
             @Override

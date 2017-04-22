@@ -21,7 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.simoncherry.cookbook.MySuggestionProvider;
+import com.simoncherry.cookbook.custom.MySuggestionProvider;
 import com.simoncherry.cookbook.R;
 import com.simoncherry.cookbook.ui.fragment.CategoryFragment;
 import com.simoncherry.cookbook.ui.fragment.CollectionFragment;

@@ -1,7 +1,7 @@
 package com.simoncherry.cookbook.di.module;
 
-import com.simoncherry.cookbook.biz.ApiTestBiz;
-import com.simoncherry.cookbook.contract.ApiTestContract;
+import com.simoncherry.cookbook.mvp.biz.ApiTestBiz;
+import com.simoncherry.cookbook.mvp.contract.ApiTestContract;
 
 import dagger.Module;
 import dagger.Provides;

@@ -1,7 +1,7 @@
 package com.simoncherry.cookbook.di.module;
 
-import com.simoncherry.cookbook.biz.DetailBiz;
-import com.simoncherry.cookbook.contract.DetailContract;
+import com.simoncherry.cookbook.mvp.biz.DetailBiz;
+import com.simoncherry.cookbook.mvp.contract.DetailContract;
 
 import dagger.Module;
 import dagger.Provides;

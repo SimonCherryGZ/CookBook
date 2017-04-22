@@ -1,4 +1,4 @@
-package com.simoncherry.cookbook.contract;
+package com.simoncherry.cookbook.mvp.contract;
 
 import com.simoncherry.cookbook.model.MobCategoryResult;
 import com.simoncherry.cookbook.model.MobRecipe;
@@ -14,7 +14,7 @@ public interface ApiTestContract {
         void onQueryCategorySuccess(MobCategoryResult value);
         void onQueryRecipe(MobRecipeResult value);
         void onQueryDetail(MobRecipe value);
-        void onQueryFailed();
+        void onQueryEmpty();
         void onQueryError(String msg);
     }
 

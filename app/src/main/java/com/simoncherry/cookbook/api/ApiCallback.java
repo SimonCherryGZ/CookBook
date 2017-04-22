@@ -10,21 +10,18 @@ import com.simoncherry.cookbook.model.MobRecipeResult;
 
 public interface ApiCallback {
 
-    interface QueryCategoryCallback {
+    interface QueryCategoryCallback extends BaseCallback{
         void onQueryCategorySuccess(MobCategoryResult value);
-        void onQueryFailed();
-        void onQueryError(String msg);
+        void onQueryCategoryEmpty();
     }
 
-    interface QueryRecipeCallback {
+    interface QueryRecipeCallback extends BaseCallback {
         void onQueryRecipeSuccess(MobRecipeResult value);
-        void onQueryFailed();
-        void onQueryError(String msg);
+        void onQueryRecipeEmpty();
     }
 
-    interface QueryDetailCallback {
+    interface QueryDetailCallback extends BaseCallback {
         void onQueryDetailSuccess(MobRecipe value);
-        void onQueryFailed();
-        void onQueryError(String msg);
+        void onQueryDetailEmpty();
     }
 }

@@ -6,15 +6,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
 import com.simoncherry.cookbook.R;
-import com.simoncherry.cookbook.biz.ApiTestBiz;
-import com.simoncherry.cookbook.contract.ApiTestContract;
+import com.simoncherry.cookbook.mvp.biz.ApiTestBiz;
+import com.simoncherry.cookbook.mvp.contract.ApiTestContract;
 import com.simoncherry.cookbook.di.component.DaggerApiTestComponent;
 import com.simoncherry.cookbook.di.module.ApiTestModule;
 import com.simoncherry.cookbook.model.MobCategoryResult;
 import com.simoncherry.cookbook.model.MobRecipe;
 import com.simoncherry.cookbook.model.MobRecipeResult;
-import com.simoncherry.cookbook.presenter.ApiTestPresenter;
+import com.simoncherry.cookbook.mvp.presenter.ApiTestPresenter;
 
 import javax.inject.Inject;
 
@@ -22,6 +23,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class ApiTestActivity extends BaseActivity implements ApiTestContract.View {
+
+    private final static String TAG = ApiTestActivity.class.getSimpleName();
 
     @BindView(R.id.tv_result)
     TextView tvResult;
@@ -80,13 +83,25 @@ public class ApiTestActivity extends BaseActivity implements ApiTestContract.Vie
     }
 
     @Override
-    public void onQueryFailed() {
-        Toast.makeText(this, "value is null", Toast.LENGTH_SHORT).show();
+    public void onQueryEmpty() {
+        Toast.makeText(this, "查询结果为空", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onQueryError(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onShowProgressBar() {
+        Logger.t(TAG).i("onShowProgressBar");
+        showProgressBar();
+    }
+
+    @Override
+    public void onHideProgressBar() {
+        Logger.t(TAG).i("onHideProgressBar");
+        hideProgressBar();
     }
 
     @OnClick({R.id.btn_query_category, R.id.btn_query_recipe, R.id.btn_query_detail})

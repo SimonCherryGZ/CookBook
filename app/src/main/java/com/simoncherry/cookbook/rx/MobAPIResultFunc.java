@@ -1,4 +1,6 @@
-package com.simoncherry.cookbook.model;
+package com.simoncherry.cookbook.rx;
+
+import com.simoncherry.cookbook.model.MobAPIResult;
 
 import io.reactivex.functions.Function;
 

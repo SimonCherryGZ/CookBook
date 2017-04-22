@@ -1,17 +1,17 @@
-package com.simoncherry.cookbook.biz;
+package com.simoncherry.cookbook.mvp.biz;
 
 import com.simoncherry.cookbook.api.ApiCallback;
 import com.simoncherry.cookbook.api.MobAPIService;
-import com.simoncherry.cookbook.model.MobAPIResultFunc;
 import com.simoncherry.cookbook.model.MobRecipe;
+import com.simoncherry.cookbook.rx.MobAPIResultFunc;
+import com.simoncherry.cookbook.rx.RxSchedulersHelper;
+import com.simoncherry.cookbook.rx.RxSubscriber;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Simon on 2017/4/20.
@@ -29,29 +29,21 @@ public class DetailBiz extends BaseBiz implements ApiCallback {
         MobAPIService.getMobAPI()
                 .queryDetail(params)
                 .map(new MobAPIResultFunc<MobRecipe>())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MobRecipe>() {
+                .compose(RxSchedulersHelper.<MobRecipe>io_main())
+                .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void accept(Disposable disposable) throws Exception {
+                        callback.onStart();
                     }
-
+                })
+                .subscribe(new RxSubscriber<MobRecipe>(callback) {
                     @Override
                     public void onNext(MobRecipe value) {
                         if (value != null) {
                             callback.onQueryDetailSuccess(value);
                         } else {
-                            callback.onQueryFailed();
+                            callback.onQueryDetailEmpty();
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        callback.onQueryError(e.toString());
-                    }
-
-                    @Override
-                    public void onComplete() {
                     }
                 });
     }

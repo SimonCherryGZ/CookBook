@@ -5,15 +5,15 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.simoncherry.cookbook.R;
-import com.simoncherry.cookbook.biz.CategoryBiz;
-import com.simoncherry.cookbook.contract.CategoryContract;
+import com.simoncherry.cookbook.mvp.biz.CategoryBiz;
+import com.simoncherry.cookbook.mvp.contract.CategoryContract;
 import com.simoncherry.cookbook.di.component.DaggerCategoryComponent;
 import com.simoncherry.cookbook.di.module.CategoryModule;
 import com.simoncherry.cookbook.model.MobCategoryChild1;
 import com.simoncherry.cookbook.model.MobCategoryChild2;
 import com.simoncherry.cookbook.model.MobCategoryResult;
 import com.simoncherry.cookbook.model.RealmCategory;
-import com.simoncherry.cookbook.presenter.CategoryPresenter;
+import com.simoncherry.cookbook.mvp.presenter.CategoryPresenter;
 import com.simoncherry.cookbook.realm.RealmHelper;
 
 import java.util.ArrayList;
@@ -59,11 +59,23 @@ public class SplashActivity extends BaseActivity implements CategoryContract.Vie
     }
 
     @Override
-    public void onQueryFailed() {
+    public void onQueryEmpty() {
+        Toast.makeText(this, "无法获取菜谱", Toast.LENGTH_SHORT).show();
+        startMainActivity();
     }
 
     @Override
     public void onQueryError(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        startMainActivity();
+    }
+
+    @Override
+    public void onShowProgressBar() {
+    }
+
+    @Override
+    public void onHideProgressBar() {
     }
 
     private void init() {

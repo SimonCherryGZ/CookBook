@@ -5,9 +5,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -21,6 +24,7 @@ public abstract class BaseFragment extends Fragment {
     protected Activity mActivity;
     protected Context mContext;
     private Unbinder mUnbinder;
+    private ProgressBar mProgressBar;
 
     @Nullable
     @Override
@@ -51,4 +55,25 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract int getLayout();
     protected abstract void initComponent();
+
+    private void initProgressBar() {
+        mProgressBar = new ProgressBar(mContext, null, android.R.attr.progressBarStyleLarge);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.CENTER;
+        mActivity.addContentView(mProgressBar, layoutParams);
+    }
+
+    protected void showProgressBar() {
+        if (mProgressBar == null) {
+            initProgressBar();
+        }
+        mProgressBar.setIndeterminate(true);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    protected void hideProgressBar() {
+        if (mProgressBar != null) {
+            mProgressBar.setVisibility(View.GONE);
+        }
+    }
 }

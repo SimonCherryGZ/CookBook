@@ -13,8 +13,8 @@
         android:theme="@style/AppTheme">
 
         <provider
-            android:name=".MySuggestionProvider"
-            android:authorities="com.simoncherry.cookbook.MySuggestionProvider" />
+            android:name=".custom.MySuggestionProvider"
+            android:authorities="com.simoncherry.cookbook.custom.MySuggestionProvider" />
 
         <activity
             android:name=".ui.activity.SplashActivity"
