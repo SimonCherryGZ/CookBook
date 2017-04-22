@@ -7,18 +7,27 @@
     <TextView
         style="@style/setting_tv_title_style"
         android:text="偏好设置"/>
+
     <LinearLayout
         style="@style/setting_layout_style">
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/layout_set_mode"
             style="@style/setting_item_style">
             <TextView
+                android:id="@+id/tv_mode"
                 style="@style/setting_tv_option_style"
                 android:text="省流量模式"/>
             <TextView
                 style="@style/setting_tv_hint_style"
+                android:layout_below="@+id/tv_mode"
                 android:text="非Wi-Fi环境下不加载图片"/>
-        </LinearLayout>
+            <Switch
+                android:id="@+id/switch_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
@@ -28,18 +37,45 @@
         <LinearLayout
             android:id="@+id/layout_history_count"
             style="@style/setting_item_style">
+
             <TextView
                 style="@style/setting_tv_option_style"
                 android:text="最近浏览记录数量"/>
-            <TextView
-                style="@style/setting_tv_hint_style"
-                android:text="10条"/>
+
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingRight="0dp">
+
+                <RadioButton
+                    android:id="@+id/radio_5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="5条"/>
+                <RadioButton
+                    android:id="@+id/radio_10"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="10条"
+                    android:checked="true"/>
+                <RadioButton
+                    android:id="@+id/radio_20"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="20条"/>
+            </RadioGroup>
         </LinearLayout>
     </LinearLayout>
 
     <TextView
         style="@style/setting_tv_title_style"
         android:text="其他设置"/>
+
     <LinearLayout
         style="@style/setting_layout_style">
         <LinearLayout

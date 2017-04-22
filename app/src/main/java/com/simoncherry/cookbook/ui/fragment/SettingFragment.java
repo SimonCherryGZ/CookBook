@@ -3,13 +3,16 @@ package com.simoncherry.cookbook.ui.fragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.InputType;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,9 +30,19 @@ import butterknife.OnClick;
 public class SettingFragment extends BaseFragment {
 
     @BindView(R.id.layout_set_mode)
-    LinearLayout layoutSetMode;
+    RelativeLayout layoutSetMode;
+    @BindView(R.id.switch_mode)
+    Switch switchMode;
     @BindView(R.id.layout_history_count)
     LinearLayout layoutHistoryCount;
+    @BindView(R.id.radio_group)
+    RadioGroup radioGroup;
+    @BindView(R.id.radio_5)
+    RadioButton radio5;
+    @BindView(R.id.radio_10)
+    RadioButton radio10;
+    @BindView(R.id.radio_20)
+    RadioButton radio20;
     @BindView(R.id.layout_clear_search)
     LinearLayout layoutClearSearch;
     @BindView(R.id.layout_clear_cache)
@@ -74,6 +87,40 @@ public class SettingFragment extends BaseFragment {
     }
 
     private void init() {
+        switchMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String txt;
+                if (isChecked) {
+                    txt = "已开启省流量模式";
+                } else {
+                    txt = "已关闭省流量模式";
+                }
+                Toast.makeText(mContext, txt, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                switch (checkedId) {
+                    case R.id.radio_5:
+                        onChangeHistoryCount(5);
+                        break;
+                    case R.id.radio_10:
+                        onChangeHistoryCount(10);
+                        break;
+                    case R.id.radio_20:
+                        onChangeHistoryCount(20);
+                        break;
+                }
+            }
+        });
+    }
+
+    private void onChangeHistoryCount(int count) {
+        String txt = "已修改为 " + count + " 条";
+        Toast.makeText(mContext, txt, Toast.LENGTH_SHORT).show();
     }
 
     private void showCacheSize() {
@@ -95,34 +142,6 @@ public class SettingFragment extends BaseFragment {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 Toast.makeText(mContext, "已更改设置", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void onChangeHistoryCount() {
-        final EditText editText = new EditText(mContext);
-        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-        editText.setHint("当前数量：10条");
-
-        DialogUtils.showDialog(mContext, "提示", "最近浏览记录的最大数量", editText, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                String text = editText.getText().toString();
-                if (!TextUtils.isEmpty(text)) {
-                    int count = 0;
-                    try {
-                        count = Integer.parseInt(text);
-                        String msg = "已设置最大数量: " + text;
-                        Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
-                        return;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                String msg = "输入异常";
-                Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -149,14 +168,11 @@ public class SettingFragment extends BaseFragment {
         });
     }
 
-    @OnClick({R.id.layout_set_mode, R.id.layout_history_count, R.id.layout_clear_search, R.id.layout_clear_cache})
+    @OnClick({R.id.layout_set_mode, R.id.layout_clear_search, R.id.layout_clear_cache})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.layout_set_mode:
                 onChangeNetMode();
-                break;
-            case R.id.layout_history_count:
-                onChangeHistoryCount();
                 break;
             case R.id.layout_clear_search:
                 onClearSearchHistory();
