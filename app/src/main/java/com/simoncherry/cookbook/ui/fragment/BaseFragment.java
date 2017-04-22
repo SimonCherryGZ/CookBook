@@ -23,7 +23,7 @@ public abstract class BaseFragment extends Fragment {
 
     protected Activity mActivity;
     protected Context mContext;
-    private Unbinder mUnbinder;
+    private Unbinder mUnBinder;
     private ProgressBar mProgressBar;
 
     @Nullable
@@ -37,13 +37,13 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mUnbinder = ButterKnife.bind(this, view);
+        mUnBinder = ButterKnife.bind(this, view);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
+        mUnBinder.unbind();
     }
 
     @Override

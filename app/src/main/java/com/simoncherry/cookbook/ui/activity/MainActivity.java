@@ -28,6 +28,7 @@ import com.simoncherry.cookbook.ui.fragment.CollectionFragment;
 import com.simoncherry.cookbook.ui.fragment.HistoryFragment;
 import com.simoncherry.cookbook.ui.fragment.MainFragment;
 import com.simoncherry.cookbook.ui.fragment.RecipeFragment;
+import com.simoncherry.cookbook.ui.fragment.SettingFragment;
 
 import butterknife.BindView;
 
@@ -45,6 +46,7 @@ public class MainActivity extends BaseActivity
     private CategoryFragment categoryFragment;
     private CollectionFragment collectionFragment;
     private HistoryFragment historyFragment;
+    private SettingFragment settingFragment;
     private RecipeFragment recipeFragment;
 
     private long exitTime = 0;
@@ -178,6 +180,8 @@ public class MainActivity extends BaseActivity
                 switchFragment(currentFragment, historyFragment);
                 break;
             case R.id.nav_manage:
+                toolbar.setTitle(R.string.main_title_setting);
+                switchFragment(currentFragment, settingFragment);
                 break;
             case R.id.nav_share:
                 break;
@@ -243,6 +247,7 @@ public class MainActivity extends BaseActivity
         categoryFragment = CategoryFragment.newInstance();
         collectionFragment = CollectionFragment.newInstance();
         historyFragment = HistoryFragment.newInstance();
+        settingFragment = SettingFragment.newInstance();
 
         previousFragment = mainFragment;
         currentFragment = mainFragment;
@@ -251,10 +256,12 @@ public class MainActivity extends BaseActivity
                 .add(R.id.layout_content, categoryFragment)
                 .add(R.id.layout_content, collectionFragment)
                 .add(R.id.layout_content, historyFragment)
+                .add(R.id.layout_content, settingFragment)
                 .add(R.id.layout_content, recipeFragment)
                 .hide(categoryFragment)
                 .hide(collectionFragment)
                 .hide(historyFragment)
+                .hide(settingFragment)
                 .hide(recipeFragment)
                 .show(mainFragment)
                 .commit();
