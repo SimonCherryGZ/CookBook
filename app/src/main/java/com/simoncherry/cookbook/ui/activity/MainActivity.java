@@ -49,6 +49,8 @@ public class MainActivity extends SimpleActivity
     private SettingFragment settingFragment;
     private RecipeFragment recipeFragment;
 
+    SearchView searchView = null;
+
     private long exitTime = 0;
 
     @Override
@@ -76,7 +78,9 @@ public class MainActivity extends SimpleActivity
             if (previousFragment instanceof CategoryFragment && currentFragment instanceof RecipeFragment){
                 backToFragment(currentFragment, previousFragment);
                 toolbar.setTitle(R.string.main_title_category);
-            }else {
+            } else if (searchView != null && !searchView.isIconified()) {
+                searchView.setIconified(true);
+            } else {
                 if ((System.currentTimeMillis() - exitTime) > 2000){
                     Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
                     exitTime = System.currentTimeMillis();
@@ -94,7 +98,7 @@ public class MainActivity extends SimpleActivity
         MenuItem searchItem = menu.findItem(R.id.search_view);//在菜单中找到对应控件的item
         SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
 
-        SearchView searchView = null;
+        //SearchView searchView = null;
         if (searchItem != null) {
             searchView = (SearchView) searchItem.getActionView();
         }
