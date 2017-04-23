@@ -101,7 +101,7 @@ public class DataCleanManager {
         }
     }
 
-    // TODO mark by simon at 2016/07/14 -- 只删了cache下的文件，删不掉文件夹
+    // mark by simon at 2016/07/14 -- 只删了cache下的文件，删不掉文件夹
 //    /**
 //     * * 删除方法 这里只会删除某个文件夹下的文件，如果传入的directory是个文件，将不做处理 * *
 //     *
@@ -127,7 +127,7 @@ public class DataCleanManager {
                 return;
             }
             for (int i = 0; i < childFiles.length; i++) {
-                deleteFilesByDirectory(childFiles[i]); // TODO 递归调用
+                deleteFilesByDirectory(childFiles[i]); // 递归调用
             }
             file.delete();
         }

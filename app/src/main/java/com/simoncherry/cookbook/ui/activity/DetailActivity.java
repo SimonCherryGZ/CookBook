@@ -33,6 +33,7 @@ import com.simoncherry.cookbook.R;
 import com.simoncherry.cookbook.databinding.ActivityDetailBinding;
 import com.simoncherry.cookbook.di.component.DaggerDetailComponent;
 import com.simoncherry.cookbook.di.module.DetailModule;
+import com.simoncherry.cookbook.model.Constant;
 import com.simoncherry.cookbook.model.MobRecipe;
 import com.simoncherry.cookbook.model.MobRecipeDetail;
 import com.simoncherry.cookbook.model.MobRecipeMethod;
@@ -44,6 +45,7 @@ import com.simoncherry.cookbook.mvp.presenter.DetailPresenter;
 import com.simoncherry.cookbook.realm.RealmHelper;
 import com.simoncherry.cookbook.ui.adapter.MethodAdapter;
 import com.simoncherry.cookbook.util.ImageLoaderUtils;
+import com.simoncherry.cookbook.util.SPUtils;
 import com.simoncherry.cookbook.util.StatusBarUtils;
 
 import java.util.ArrayList;
@@ -102,6 +104,7 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailContr
 
     private Realm realm;
     private RealmResults<RealmCollection> realmResults;
+    private SPUtils spUtils;
 
     private MobRecipe mobRecipe;
     private String recipeId = "";
@@ -307,7 +310,11 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailContr
     private void saveHistoryToRealm() {
         if (mobRecipe != null && mobRecipe.getRecipeDetail() != null) {
             if (RealmHelper.retrieveHistoryByMenuId(realm, recipeId).size() == 0) {  // 如果没有该条历史
-                if (RealmHelper.retrieveHistory(realm).size() > 5) {  // 如果历史数量大于5
+                if (spUtils == null) {
+                    spUtils = new SPUtils(mContext, Constant.SP_NAME);
+                }
+                int limit = spUtils.getInt(Constant.SP_HISTORY_COUNT, Constant.DEFAULT_HISTORY_COUNT);
+                if (RealmHelper.retrieveHistory(realm).size() >= limit) {
                     RealmHelper.deleteFirstHistory(realm);
                 }
 

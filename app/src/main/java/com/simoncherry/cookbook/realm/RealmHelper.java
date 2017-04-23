@@ -1,5 +1,6 @@
 package com.simoncherry.cookbook.realm;
 
+import com.orhanobut.logger.Logger;
 import com.simoncherry.cookbook.model.MobCategory;
 import com.simoncherry.cookbook.model.RealmCategory;
 import com.simoncherry.cookbook.model.RealmCollection;
@@ -104,6 +105,38 @@ public class RealmHelper {
                 if (results.size() > 0) {
                     results.deleteAllFromRealm();
                 }
+            }
+        });
+    }
+
+    public static void deleteMultiHistoryAsync(final int count) {
+        if (count <= 0) {
+            return;
+        }
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<RealmHistory> results = realm.where(RealmHistory.class)
+                        .findAll()
+                        .sort("createTime", Sort.ASCENDING);
+                if (results.size() > count) {
+                    int diff = results.size() - count;
+                    for (int i = 0; i < diff; i++) {
+                        results.deleteFirstFromRealm();
+                    }
+                }
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                realm.close();
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                Logger.t(TAG).e(error.getMessage());
+                realm.close();
             }
         });
     }

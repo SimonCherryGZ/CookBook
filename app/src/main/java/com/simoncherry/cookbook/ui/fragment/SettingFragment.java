@@ -18,8 +18,11 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.simoncherry.cookbook.R;
+import com.simoncherry.cookbook.model.Constant;
+import com.simoncherry.cookbook.realm.RealmHelper;
 import com.simoncherry.cookbook.util.DataCleanManager;
 import com.simoncherry.cookbook.util.DialogUtils;
+import com.simoncherry.cookbook.util.SPUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -51,6 +54,8 @@ public class SettingFragment extends BaseFragment {
     TextView tvCache;
 
     private final static String TAG = SettingFragment.class.getSimpleName();
+
+    private SPUtils spUtils;
 
 
     public SettingFragment() {
@@ -87,6 +92,11 @@ public class SettingFragment extends BaseFragment {
     }
 
     private void init() {
+        initView();
+        initData();
+    }
+
+    private void initView() {
         switchMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -118,9 +128,33 @@ public class SettingFragment extends BaseFragment {
         });
     }
 
+    private void initData() {
+        spUtils = new SPUtils(mContext, Constant.SP_NAME);
+        int count = spUtils.getInt(Constant.SP_HISTORY_COUNT, Constant.DEFAULT_HISTORY_COUNT);
+        setRadioButtonByCount(count);
+    }
+
+    private void setRadioButtonByCount(int count) {
+        switch (count) {
+            case 5:
+                radio5.setChecked(true);
+                break;
+            case 10:
+                radio10.setChecked(true);
+                break;
+            case 20:
+                radio20.setChecked(true);
+                break;
+            default:
+                radio10.setChecked(true);
+        }
+    }
+
     private void onChangeHistoryCount(int count) {
-        String txt = "已修改为 " + count + " 条";
-        Toast.makeText(mContext, txt, Toast.LENGTH_SHORT).show();
+        spUtils.put(Constant.SP_HISTORY_COUNT, count);
+        RealmHelper.deleteMultiHistoryAsync(count);
+//        String txt = "已修改为 " + count + " 条";
+//        Toast.makeText(mContext, txt, Toast.LENGTH_SHORT).show();
     }
 
     private void showCacheSize() {
