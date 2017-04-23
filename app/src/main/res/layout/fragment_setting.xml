@@ -35,7 +35,7 @@
             android:background="@color/gray_inactive"/>
 
         <LinearLayout
-            android:id="@+id/layout_history_count"
+            android:id="@+id/layout_history_limit"
             style="@style/setting_item_style">
 
             <TextView

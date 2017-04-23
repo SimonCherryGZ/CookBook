@@ -7,7 +7,9 @@ package com.simoncherry.cookbook.model;
 public class Constant {
 
     public final static String SP_NAME = "spCookBook";
-    public final static String SP_HISTORY_COUNT = "historyCount";
+    public final static String SP_SAVE_MODE = "saveMode";
+    public final static String SP_HISTORY_LIMIT = "historyLimit";
 
-    public final static int DEFAULT_HISTORY_COUNT = 10;
+    public final static boolean DEFAULT_SAVE_MODE = false;
+    public final static int DEFAULT_HISTORY_LIMIT = 10;
 }

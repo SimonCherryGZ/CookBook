@@ -10,7 +10,7 @@ import com.simoncherry.cookbook.model.MobRecipeResult;
 
 public interface ApiTestContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseApiView<Presenter> {
         void onQueryCategorySuccess(MobCategoryResult value);
         void onQueryRecipe(MobRecipeResult value);
         void onQueryDetail(MobRecipe value);

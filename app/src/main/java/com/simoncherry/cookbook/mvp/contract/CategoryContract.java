@@ -8,7 +8,7 @@ import com.simoncherry.cookbook.model.MobCategoryResult;
 
 public interface CategoryContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseApiView<Presenter> {
         void onQueryCategorySuccess(MobCategoryResult result);
     }
 

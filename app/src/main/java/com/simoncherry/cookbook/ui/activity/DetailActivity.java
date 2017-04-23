@@ -313,7 +313,7 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailContr
                 if (spUtils == null) {
                     spUtils = new SPUtils(mContext, Constant.SP_NAME);
                 }
-                int limit = spUtils.getInt(Constant.SP_HISTORY_COUNT, Constant.DEFAULT_HISTORY_COUNT);
+                int limit = spUtils.getInt(Constant.SP_HISTORY_LIMIT, Constant.DEFAULT_HISTORY_LIMIT);
                 if (RealmHelper.retrieveHistory(realm).size() >= limit) {
                     RealmHelper.deleteFirstHistory(realm);
                 }

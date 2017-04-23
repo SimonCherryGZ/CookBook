@@ -3,7 +3,6 @@ package com.simoncherry.cookbook.ui.fragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.provider.SearchRecentSuggestions;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,12 +18,16 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.simoncherry.cookbook.R;
-import com.simoncherry.cookbook.custom.MySuggestionProvider;
+import com.simoncherry.cookbook.di.component.DaggerSettingComponent;
+import com.simoncherry.cookbook.di.module.SettingModule;
 import com.simoncherry.cookbook.model.Constant;
-import com.simoncherry.cookbook.realm.RealmHelper;
+import com.simoncherry.cookbook.mvp.contract.SettingContract;
+import com.simoncherry.cookbook.mvp.presenter.SettingPresenter;
 import com.simoncherry.cookbook.util.DataCleanManager;
 import com.simoncherry.cookbook.util.DialogUtils;
 import com.simoncherry.cookbook.util.SPUtils;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -32,14 +35,14 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingFragment extends BaseFragment {
+public class SettingFragment extends BaseFragment implements SettingContract.View{
 
     @BindView(R.id.layout_set_mode)
     RelativeLayout layoutSetMode;
     @BindView(R.id.switch_mode)
     Switch switchMode;
-    @BindView(R.id.layout_history_count)
-    LinearLayout layoutHistoryCount;
+    @BindView(R.id.layout_history_limit)
+    LinearLayout layoutHistoryLimit;
     @BindView(R.id.radio_group)
     RadioGroup radioGroup;
     @BindView(R.id.radio_5)
@@ -57,6 +60,8 @@ public class SettingFragment extends BaseFragment {
 
     private final static String TAG = SettingFragment.class.getSimpleName();
 
+    @Inject
+    public SettingPresenter mPresenter;
     private SPUtils spUtils;
 
 
@@ -78,6 +83,11 @@ public class SettingFragment extends BaseFragment {
 
     @Override
     protected void initComponent() {
+        spUtils = new SPUtils(mContext, Constant.SP_NAME);
+        DaggerSettingComponent.builder()
+                .settingModule(new SettingModule(mContext, spUtils, this))
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -90,25 +100,59 @@ public class SettingFragment extends BaseFragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         Logger.t(TAG).i("onHiddenChanged :" + hidden);
-        showCacheSize();
+        onShowCacheSize();
+    }
+
+    @Override
+    public void setPresenter(SettingContract.Presenter presenter) {
+        mPresenter = (SettingPresenter) presenter;
+    }
+
+    @Override
+    public void onChangeSaveMode(boolean isSaveMode) {
+        String txt;
+        if (isSaveMode) {
+            txt = "已开启省流量模式";
+        } else {
+            txt = "已关闭省流量模式";
+        }
+        Toast.makeText(mContext, txt, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onShowCacheSize() {
+        try {
+            String cacheSize = DataCleanManager.getCacheSize(mActivity.getCacheDir());
+            tvCache.setText(cacheSize);
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (tvCache != null) {
+                String txt = "0.0Byte";
+                tvCache.setText(txt);
+            }
+        }
+    }
+
+    @Override
+    public void onClearSearchHistorySuccess() {
+        Toast.makeText(mContext, "已清除搜索记录", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onClearCacheSuccess() {
+        Toast.makeText(mContext, "已清除缓存", Toast.LENGTH_SHORT).show();
     }
 
     private void init() {
-        initView();
         initData();
+        initView();
     }
 
     private void initView() {
         switchMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                String txt;
-                if (isChecked) {
-                    txt = "已开启省流量模式";
-                } else {
-                    txt = "已关闭省流量模式";
-                }
-                Toast.makeText(mContext, txt, Toast.LENGTH_SHORT).show();
+                mPresenter.changeSaveMode(isChecked);
             }
         });
 
@@ -117,13 +161,13 @@ public class SettingFragment extends BaseFragment {
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 switch (checkedId) {
                     case R.id.radio_5:
-                        onChangeHistoryCount(5);
+                        mPresenter.changeHistoryLimit(5);
                         break;
                     case R.id.radio_10:
-                        onChangeHistoryCount(10);
+                        mPresenter.changeHistoryLimit(10);
                         break;
                     case R.id.radio_20:
-                        onChangeHistoryCount(20);
+                        mPresenter.changeHistoryLimit(20);
                         break;
                 }
             }
@@ -131,8 +175,10 @@ public class SettingFragment extends BaseFragment {
     }
 
     private void initData() {
-        spUtils = new SPUtils(mContext, Constant.SP_NAME);
-        int count = spUtils.getInt(Constant.SP_HISTORY_COUNT, Constant.DEFAULT_HISTORY_COUNT);
+        boolean isSaveMode = spUtils.getBoolean(Constant.SP_SAVE_MODE, Constant.DEFAULT_SAVE_MODE);
+        switchMode.setChecked(isSaveMode);
+
+        int count = spUtils.getInt(Constant.SP_HISTORY_LIMIT, Constant.DEFAULT_HISTORY_LIMIT);
         setRadioButtonByCount(count);
     }
 
@@ -152,45 +198,12 @@ public class SettingFragment extends BaseFragment {
         }
     }
 
-    private void onChangeHistoryCount(int count) {
-        spUtils.put(Constant.SP_HISTORY_COUNT, count);
-        RealmHelper.deleteMultiHistoryAsync(count);
-//        String txt = "已修改为 " + count + " 条";
-//        Toast.makeText(mContext, txt, Toast.LENGTH_SHORT).show();
-    }
-
-    private void showCacheSize() {
-        try {
-            String cacheSize = DataCleanManager.getCacheSize(mActivity.getCacheDir());
-            tvCache.setText(cacheSize);
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (tvCache != null) {
-                String txt = "0.0Byte";
-                tvCache.setText(txt);
-            }
-        }
-    }
-
-    private void onChangeNetMode() {
-        DialogUtils.showDialog(mContext, "提示", "是否要更改设置", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                Toast.makeText(mContext, "已更改设置", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     private void onClearSearchHistory() {
         DialogUtils.showDialog(mContext, "提示", "是否要清除搜索记录", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                SearchRecentSuggestions suggestions = new SearchRecentSuggestions(mContext,
-                        MySuggestionProvider.AUTHORITY, MySuggestionProvider.MODE);
-                suggestions.clearHistory();
-                Toast.makeText(mContext, "已清除搜索记录", Toast.LENGTH_SHORT).show();
+                mPresenter.clearSearchHistory();
             }
         });
     }
@@ -200,19 +213,14 @@ public class SettingFragment extends BaseFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                DataCleanManager.cleanInternalCache(mContext);
-                showCacheSize();
-                Toast.makeText(mContext, "已清除缓存", Toast.LENGTH_SHORT).show();
+                mPresenter.clearCache();
             }
         });
     }
 
-    @OnClick({R.id.layout_set_mode, R.id.layout_clear_search, R.id.layout_clear_cache})
+    @OnClick({R.id.layout_clear_search, R.id.layout_clear_cache})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.layout_set_mode:
-                onChangeNetMode();
-                break;
             case R.id.layout_clear_search:
                 onClearSearchHistory();
                 break;

@@ -8,7 +8,7 @@ import com.simoncherry.cookbook.model.MobRecipe;
 
 public interface DetailContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseApiView<Presenter> {
         void onQueryDetailSuccess(MobRecipe value);
     }
 
