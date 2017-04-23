@@ -3,6 +3,7 @@ package com.simoncherry.cookbook.ui.fragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.simoncherry.cookbook.R;
+import com.simoncherry.cookbook.custom.MySuggestionProvider;
 import com.simoncherry.cookbook.model.Constant;
 import com.simoncherry.cookbook.realm.RealmHelper;
 import com.simoncherry.cookbook.util.DataCleanManager;
@@ -185,6 +187,9 @@ public class SettingFragment extends BaseFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                SearchRecentSuggestions suggestions = new SearchRecentSuggestions(mContext,
+                        MySuggestionProvider.AUTHORITY, MySuggestionProvider.MODE);
+                suggestions.clearHistory();
                 Toast.makeText(mContext, "已清除搜索记录", Toast.LENGTH_SHORT).show();
             }
         });
