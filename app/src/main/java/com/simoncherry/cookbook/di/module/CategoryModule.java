@@ -1,7 +1,6 @@
 package com.simoncherry.cookbook.di.module;
 
 import com.simoncherry.cookbook.mvp.biz.CategoryBiz;
-import com.simoncherry.cookbook.mvp.contract.CategoryContract;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,20 +12,13 @@ import dagger.Provides;
 public class CategoryModule {
 
     private CategoryBiz mBiz;
-    private CategoryContract.View mView;
 
-    public CategoryModule(CategoryBiz mBiz, CategoryContract.View mView) {
+    public CategoryModule(CategoryBiz mBiz) {
         this.mBiz = mBiz;
-        this.mView = mView;
     }
 
     @Provides
     CategoryBiz provideBiz() {
         return mBiz;
-    }
-
-    @Provides
-    CategoryContract.View provideView() {
-        return mView;
     }
 }

@@ -16,23 +16,15 @@ import javax.inject.Inject;
  * Created by Simon on 2017/4/23.
  */
 
-public class SettingPresenter extends BasePresenter implements SettingContract.Presenter {
+public class SettingPresenter extends RxPresenter<SettingContract.View> implements SettingContract.Presenter {
 
     private Context mContext;
     private SPUtils mSpUtils;
-    private SettingContract.View mView;
 
     @Inject
-    public SettingPresenter(Context mContext, SPUtils spUtils, SettingContract.View mView) {
+    public SettingPresenter(Context mContext, SPUtils spUtils) {
         this.mContext = mContext;
         this.mSpUtils = spUtils;
-        this.mView = mView;
-
-        mView.setPresenter(this);
-    }
-
-    @Override
-    public void start() {
     }
 
     @Override

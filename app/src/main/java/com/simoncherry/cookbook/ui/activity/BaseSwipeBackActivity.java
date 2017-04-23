@@ -1,11 +1,17 @@
 package com.simoncherry.cookbook.ui.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+
+import com.simoncherry.cookbook.mvp.presenter.BasePresenter;
+import com.simoncherry.cookbook.ui.BaseView;
+
+import javax.inject.Inject;
 
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
@@ -14,15 +20,34 @@ import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
  * Created by Simon on 2017/4/2.
  */
 
-public abstract class BaseSwipeBackActivity extends SwipeBackActivity{
+public abstract class BaseSwipeBackActivity<T extends BasePresenter> extends SwipeBackActivity implements BaseView {
 
+    @Inject
+    protected T mPresenter;
+    protected Activity mContext;
     private ProgressBar mProgressBar;
 
+
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         getSwipeBackLayout().setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);
+        mContext = this;
+        initComponent();
+        if (mPresenter != null) {
+            mPresenter.attachView(this);
+        }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mPresenter != null) {
+            mPresenter.detachView();
+        }
+    }
+
+    protected abstract void initComponent();
 
     private void initProgressBar() {
         mProgressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleLarge);

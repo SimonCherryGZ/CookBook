@@ -11,26 +11,18 @@ import javax.inject.Inject;
  * Created by Simon on 2017/3/29.
  */
 
-public class CategoryPresenter extends BasePresenter implements CategoryContract.Presenter{
+public class CategoryPresenter extends RxPresenter<CategoryContract.View> implements CategoryContract.Presenter{
 
     private CategoryBiz mBiz;
-    private CategoryContract.View mView;
 
     @Inject
-    public CategoryPresenter(CategoryBiz mBiz, CategoryContract.View mView) {
+    public CategoryPresenter(CategoryBiz mBiz) {
         this.mBiz = mBiz;
-        this.mView = mView;
-
-        mView.setPresenter(this);
-    }
-
-    @Override
-    public void start() {
     }
 
     @Override
     public void queryCategory() {
-        mBiz.queryCategory(new ApiCallback.QueryCategoryCallback() {
+        addSubscribe(mBiz.queryCategory(new ApiCallback.QueryCategoryCallback() {
             @Override
             public void onStart() {
                 mView.onShowProgressBar();
@@ -55,6 +47,6 @@ public class CategoryPresenter extends BasePresenter implements CategoryContract
             public void onQueryError(String msg) {
                 mView.onQueryError(msg);
             }
-        });
+        }));
     }
 }

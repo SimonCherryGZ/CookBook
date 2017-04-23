@@ -29,7 +29,7 @@ import io.realm.Sort;
  * Use the {@link HistoryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HistoryFragment extends BaseFragment {
+public class HistoryFragment extends SimpleFragment {
 
     @BindView(R.id.rv_recipe)
     RecyclerView rvRecipe;
@@ -67,10 +67,6 @@ public class HistoryFragment extends BaseFragment {
     @Override
     protected int getLayout() {
         return R.layout.fragment_history;
-    }
-
-    @Override
-    protected void initComponent() {
     }
 
     @Override

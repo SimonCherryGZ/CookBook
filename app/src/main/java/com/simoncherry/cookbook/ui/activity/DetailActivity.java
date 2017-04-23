@@ -1,7 +1,6 @@
 package com.simoncherry.cookbook.ui.activity;
 
 import android.animation.Animator;
-import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -52,8 +51,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -61,7 +58,7 @@ import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
-public class DetailActivity extends BaseSwipeBackActivity implements DetailContract.View {
+public class DetailActivity extends BaseSwipeBackActivity<DetailPresenter> implements DetailContract.View {
 
     @BindView(R.id.layout_coordinator)
     CoordinatorLayout coordinatorLayout;
@@ -92,11 +89,8 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailContr
     public final static String KEY_RECIPE_ID = "recipeId";
     public final static String KEY_THUMBNAIL = "thumbnail";
 
-    private Context mContext;
     private Unbinder unbinder;
     private ActivityDetailBinding binding;
-    @Inject
-    DetailPresenter detailPresenter;
     private ExitActivityTransition exitTransition;
 
     private MethodAdapter mAdapter;
@@ -115,7 +109,6 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailContr
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
         unbinder = ButterKnife.bind(this);
-        mContext = DetailActivity.this;
 
         startEnterAnimation(savedInstanceState);
         init();
@@ -130,8 +123,11 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailContr
     }
 
     @Override
-    public void setPresenter(DetailContract.Presenter presenter) {
-        detailPresenter = (DetailPresenter) presenter;
+    protected void initComponent() {
+        DaggerDetailComponent.builder()
+                .detailModule(new DetailModule(new DetailBiz()))
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -208,18 +204,10 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailContr
     }
 
     private void init() {
-        initComponent();
         initView();
         initRecyclerView();
         initData();
         initRealm();
-    }
-
-    private void initComponent() {
-        DaggerDetailComponent.builder()
-                .detailModule(new DetailModule(new DetailBiz(), this))
-                .build()
-                .inject(this);
     }
 
     private void initView() {
@@ -257,7 +245,7 @@ public class DetailActivity extends BaseSwipeBackActivity implements DetailContr
 
         recipeId = intent.getStringExtra(KEY_RECIPE_ID);
         if (recipeId != null && !TextUtils.isEmpty(recipeId)) {
-            detailPresenter.queryDetail(recipeId);
+            mPresenter.queryDetail(recipeId);
         } else {
             recipeId = "";
             Toast.makeText(mContext, "没有收到recipeId", Toast.LENGTH_SHORT).show();

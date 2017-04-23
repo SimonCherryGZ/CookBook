@@ -1,7 +1,6 @@
 package com.simoncherry.cookbook.di.module;
 
 import com.simoncherry.cookbook.mvp.biz.ApiTestBiz;
-import com.simoncherry.cookbook.mvp.contract.ApiTestContract;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,20 +12,13 @@ import dagger.Provides;
 public class ApiTestModule {
 
     private ApiTestBiz mBiz;
-    private ApiTestContract.View mView;
 
-    public ApiTestModule(ApiTestBiz mBiz, ApiTestContract.View mView) {
+    public ApiTestModule(ApiTestBiz mBiz) {
         this.mBiz = mBiz;
-        this.mView = mView;
     }
 
     @Provides
     ApiTestBiz provideBiz() {
         return mBiz;
-    }
-
-    @Provides
-    ApiTestContract.View provideView() {
-        return mView;
     }
 }

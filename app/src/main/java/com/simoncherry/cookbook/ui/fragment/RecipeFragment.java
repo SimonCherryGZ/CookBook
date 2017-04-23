@@ -13,12 +13,12 @@ import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.orhanobut.logger.Logger;
 import com.simoncherry.cookbook.R;
-import com.simoncherry.cookbook.mvp.biz.RecipeBiz;
-import com.simoncherry.cookbook.mvp.contract.RecipeContract;
 import com.simoncherry.cookbook.di.component.DaggerRecipeComponent;
 import com.simoncherry.cookbook.di.module.RecipeModule;
 import com.simoncherry.cookbook.model.MobRecipe;
 import com.simoncherry.cookbook.model.MobRecipeResult;
+import com.simoncherry.cookbook.mvp.biz.RecipeBiz;
+import com.simoncherry.cookbook.mvp.contract.RecipeContract;
 import com.simoncherry.cookbook.mvp.presenter.RecipePresenter;
 import com.simoncherry.cookbook.ui.activity.DetailActivity;
 import com.simoncherry.cookbook.ui.adapter.RecipeAdapter;
@@ -26,12 +26,10 @@ import com.simoncherry.cookbook.ui.adapter.RecipeAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 
 
-public class RecipeFragment extends BaseFragment implements RecipeContract.View{
+public class RecipeFragment extends BaseFragment<RecipePresenter> implements RecipeContract.View{
 
     @BindView(R.id.layout_recipe)
     TwinklingRefreshLayout refreshLayout;
@@ -49,9 +47,6 @@ public class RecipeFragment extends BaseFragment implements RecipeContract.View{
 
     private RecipeAdapter mAdapter;
     private List<MobRecipe> mData;
-
-    @Inject
-    RecipePresenter recipePresenter;
 
 
     public RecipeFragment() {
@@ -85,7 +80,7 @@ public class RecipeFragment extends BaseFragment implements RecipeContract.View{
     @Override
     protected void initComponent() {
         DaggerRecipeComponent.builder()
-                .recipeModule(new RecipeModule(new RecipeBiz(), this))
+                .recipeModule(new RecipeModule(new RecipeBiz()))
                 .build()
                 .inject(this);
     }
@@ -94,11 +89,6 @@ public class RecipeFragment extends BaseFragment implements RecipeContract.View{
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         init();
-    }
-
-    @Override
-    public void setPresenter(RecipeContract.Presenter presenter) {
-        recipePresenter = (RecipePresenter) presenter;
     }
 
     @Override
@@ -193,7 +183,7 @@ public class RecipeFragment extends BaseFragment implements RecipeContract.View{
     private void queryRecipe(String ctgId, int currentPage) {
         Logger.t(TAG).i("RecipeFragment: " + RecipeFragment.this.hashCode() + "  |  currentPage: " + currentPage);
         if (ctgId != null) {
-            recipePresenter.queryRecipe(ctgId, currentPage, PAGE_SIZE);
+            mPresenter.queryRecipe(ctgId, currentPage, PAGE_SIZE);
         } else {
             Toast.makeText(mContext, "获取菜谱分类失败，请退出后重新进入", Toast.LENGTH_SHORT).show();
         }
@@ -219,7 +209,7 @@ public class RecipeFragment extends BaseFragment implements RecipeContract.View{
     private void queryRecipeByField(String field, String value, int currentPage) {
         Logger.t(TAG).i("RecipeFragment: " + RecipeFragment.this.hashCode() + "  |  currentPage: " + currentPage);
         if (ctgId != null) {
-            recipePresenter.queryRecipeByField(field, value, currentPage, PAGE_SIZE);
+            mPresenter.queryRecipeByField(field, value, currentPage, PAGE_SIZE);
         } else {
             Toast.makeText(mContext, "获取菜谱分类失败，请退出后重新进入", Toast.LENGTH_SHORT).show();
         }

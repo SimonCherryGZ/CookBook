@@ -1,6 +1,8 @@
 package com.simoncherry.cookbook.mvp.contract;
 
 import com.simoncherry.cookbook.model.MobCategoryResult;
+import com.simoncherry.cookbook.ui.BaseView;
+import com.simoncherry.cookbook.mvp.presenter.BasePresenter;
 
 /**
  * Created by Simon on 2017/4/20.
@@ -8,11 +10,11 @@ import com.simoncherry.cookbook.model.MobCategoryResult;
 
 public interface CategoryContract {
 
-    interface View extends BaseApiView<Presenter> {
+    interface View extends BaseView {
         void onQueryCategorySuccess(MobCategoryResult result);
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends BasePresenter<View> {
         void queryCategory();
     }
 }

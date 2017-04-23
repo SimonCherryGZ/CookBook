@@ -9,6 +9,11 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
+import com.simoncherry.cookbook.ui.BaseView;
+import com.simoncherry.cookbook.mvp.presenter.BasePresenter;
+
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -16,8 +21,10 @@ import butterknife.Unbinder;
  * Created by Simon on 2017/4/2.
  */
 
-public abstract class BaseActivity extends AppCompatActivity{
+public abstract class BaseActivity<T extends BasePresenter> extends AppCompatActivity implements BaseView{
 
+    @Inject
+    protected T mPresenter;
     protected Activity mContext;
     private Unbinder mUnBinder;
     private ProgressBar mProgressBar;
@@ -29,11 +36,17 @@ public abstract class BaseActivity extends AppCompatActivity{
         mUnBinder = ButterKnife.bind(this);
         mContext = this;
         initComponent();
+        if (mPresenter != null) {
+            mPresenter.attachView(this);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mPresenter != null) {
+            mPresenter.detachView();
+        }
         mUnBinder.unbind();
     }
 

@@ -5,28 +5,23 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.simoncherry.cookbook.R;
-import com.simoncherry.cookbook.mvp.biz.CategoryBiz;
-import com.simoncherry.cookbook.mvp.contract.CategoryContract;
 import com.simoncherry.cookbook.di.component.DaggerCategoryComponent;
 import com.simoncherry.cookbook.di.module.CategoryModule;
 import com.simoncherry.cookbook.model.MobCategoryChild1;
 import com.simoncherry.cookbook.model.MobCategoryChild2;
 import com.simoncherry.cookbook.model.MobCategoryResult;
 import com.simoncherry.cookbook.model.RealmCategory;
+import com.simoncherry.cookbook.mvp.biz.CategoryBiz;
+import com.simoncherry.cookbook.mvp.contract.CategoryContract;
 import com.simoncherry.cookbook.mvp.presenter.CategoryPresenter;
 import com.simoncherry.cookbook.realm.RealmHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.realm.Realm;
 
-public class SplashActivity extends BaseActivity implements CategoryContract.View{
-
-    @Inject
-    CategoryPresenter categoryPresenter;
+public class SplashActivity extends BaseActivity<CategoryPresenter> implements CategoryContract.View{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +38,9 @@ public class SplashActivity extends BaseActivity implements CategoryContract.Vie
     @Override
     protected void initComponent() {
         DaggerCategoryComponent.builder()
-                .categoryModule(new CategoryModule(new CategoryBiz(), this))
+                .categoryModule(new CategoryModule(new CategoryBiz()))
                 .build()
                 .inject(this);
-    }
-
-    @Override
-    public void setPresenter(CategoryContract.Presenter presenter) {
-        categoryPresenter = (CategoryPresenter) presenter;
     }
 
     @Override
@@ -79,7 +69,7 @@ public class SplashActivity extends BaseActivity implements CategoryContract.Vie
     }
 
     private void init() {
-        categoryPresenter.queryCategory();
+        mPresenter.queryCategory();
     }
 
     private void handleCategoryResult(MobCategoryResult result) {

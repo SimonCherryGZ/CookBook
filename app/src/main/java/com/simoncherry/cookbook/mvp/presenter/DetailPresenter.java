@@ -11,26 +11,18 @@ import javax.inject.Inject;
  * Created by Simon on 2017/3/30.
  */
 
-public class DetailPresenter extends BasePresenter implements DetailContract.Presenter{
+public class DetailPresenter extends RxPresenter<DetailContract.View> implements DetailContract.Presenter{
 
     private DetailBiz mBiz;
-    private DetailContract.View mView;
 
     @Inject
-    public DetailPresenter(DetailBiz mBiz, DetailContract.View mView) {
+    public DetailPresenter(DetailBiz mBiz) {
         this.mBiz = mBiz;
-        this.mView = mView;
-
-        mView.setPresenter(this);
-    }
-
-    @Override
-    public void start() {
     }
 
     @Override
     public void queryDetail(String id) {
-        mBiz.queryDetail(id, new ApiCallback.QueryDetailCallback() {
+        addSubscribe(mBiz.queryDetail(id, new ApiCallback.QueryDetailCallback() {
             @Override
             public void onStart() {
                 mView.onShowProgressBar();
@@ -55,6 +47,6 @@ public class DetailPresenter extends BasePresenter implements DetailContract.Pre
             public void onQueryError(String msg) {
                 mView.onQueryError(msg);
             }
-        });
+        }));
     }
 }

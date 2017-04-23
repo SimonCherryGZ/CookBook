@@ -27,15 +27,13 @@ import com.simoncherry.cookbook.util.DataCleanManager;
 import com.simoncherry.cookbook.util.DialogUtils;
 import com.simoncherry.cookbook.util.SPUtils;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingFragment extends BaseFragment implements SettingContract.View{
+public class SettingFragment extends BaseFragment<SettingPresenter> implements SettingContract.View{
 
     @BindView(R.id.layout_set_mode)
     RelativeLayout layoutSetMode;
@@ -60,8 +58,6 @@ public class SettingFragment extends BaseFragment implements SettingContract.Vie
 
     private final static String TAG = SettingFragment.class.getSimpleName();
 
-    @Inject
-    public SettingPresenter mPresenter;
     private SPUtils spUtils;
 
 
@@ -85,7 +81,7 @@ public class SettingFragment extends BaseFragment implements SettingContract.Vie
     protected void initComponent() {
         spUtils = new SPUtils(mContext, Constant.SP_NAME);
         DaggerSettingComponent.builder()
-                .settingModule(new SettingModule(mContext, spUtils, this))
+                .settingModule(new SettingModule(mContext, spUtils))
                 .build()
                 .inject(this);
     }
@@ -101,11 +97,6 @@ public class SettingFragment extends BaseFragment implements SettingContract.Vie
         super.onHiddenChanged(hidden);
         Logger.t(TAG).i("onHiddenChanged :" + hidden);
         onShowCacheSize();
-    }
-
-    @Override
-    public void setPresenter(SettingContract.Presenter presenter) {
-        mPresenter = (SettingPresenter) presenter;
     }
 
     @Override
@@ -141,6 +132,19 @@ public class SettingFragment extends BaseFragment implements SettingContract.Vie
     @Override
     public void onClearCacheSuccess() {
         Toast.makeText(mContext, "已清除缓存", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onQueryEmpty() {
+    }
+    @Override
+    public void onQueryError(String msg) {
+    }
+    @Override
+    public void onShowProgressBar() {
+    }
+    @Override
+    public void onHideProgressBar() {
     }
 
     private void init() {

@@ -7,7 +7,7 @@ import com.simoncherry.cookbook.model.MobRecipeResult;
 
 import java.util.Map;
 
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
@@ -19,11 +19,11 @@ import retrofit2.http.QueryMap;
 public interface MobAPI {
 
     @GET("category/query")
-    Observable<MobAPIResult<MobCategoryResult>> queryCategory(@Query("key") String key);
+    Flowable<MobAPIResult<MobCategoryResult>> queryCategory(@Query("key") String key);
 
     @GET("menu/search")
-    Observable<MobAPIResult<MobRecipeResult>> queryRecipe(@QueryMap Map<String, String> params);
+    Flowable<MobAPIResult<MobRecipeResult>> queryRecipe(@QueryMap Map<String, String> params);
 
     @GET("menu/query")
-    Observable<MobAPIResult<MobRecipe>> queryDetail(@QueryMap Map<String, String> params);
+    Flowable<MobAPIResult<MobRecipe>> queryDetail(@QueryMap Map<String, String> params);
 }

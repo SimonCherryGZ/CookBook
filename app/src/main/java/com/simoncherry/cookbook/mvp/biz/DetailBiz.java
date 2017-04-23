@@ -2,16 +2,15 @@ package com.simoncherry.cookbook.mvp.biz;
 
 import com.simoncherry.cookbook.api.ApiCallback;
 import com.simoncherry.cookbook.api.MobAPIService;
+import com.simoncherry.cookbook.model.MobAPIResult;
 import com.simoncherry.cookbook.model.MobRecipe;
-import com.simoncherry.cookbook.rx.MobAPIResultFunc;
-import com.simoncherry.cookbook.rx.RxSchedulersHelper;
-import com.simoncherry.cookbook.rx.RxSubscriber;
+import com.simoncherry.cookbook.rx.CommonSubscriber;
+import com.simoncherry.cookbook.util.RxUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /**
  * Created by Simon on 2017/4/20.
@@ -19,24 +18,18 @@ import io.reactivex.functions.Consumer;
 
 public class DetailBiz extends BaseBiz implements ApiCallback {
 
-    public void queryDetail(String id, final QueryDetailCallback callback) {
+    public Disposable queryDetail(String id, final QueryDetailCallback callback) {
         checkNotNull(callback);
 
         Map<String, String> params = new HashMap<>();
         params.put("key", MobAPIService.MOB_API_KEY);
         params.put("id", id);
 
-        MobAPIService.getMobAPI()
+        return MobAPIService.getMobAPI()
                 .queryDetail(params)
-                .map(new MobAPIResultFunc<MobRecipe>())
-                .compose(RxSchedulersHelper.<MobRecipe>io_main())
-                .doOnSubscribe(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
-                        callback.onStart();
-                    }
-                })
-                .subscribe(new RxSubscriber<MobRecipe>(callback) {
+                .compose(RxUtils.<MobAPIResult<MobRecipe>>rxSchedulerHelper())
+                .compose(RxUtils.<MobRecipe>handleMobResult())
+                .subscribeWith(new CommonSubscriber<MobRecipe>(callback) {
                     @Override
                     public void onNext(MobRecipe value) {
                         if (value != null) {

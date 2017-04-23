@@ -12,6 +12,11 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
+import com.simoncherry.cookbook.mvp.presenter.BasePresenter;
+import com.simoncherry.cookbook.ui.BaseView;
+
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -19,8 +24,10 @@ import butterknife.Unbinder;
  * Created by Simon on 2017/4/21.
  */
 
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment<T extends BasePresenter> extends Fragment implements BaseView{
 
+    @Inject
+    protected T mPresenter;
     protected Activity mActivity;
     protected Context mContext;
     private Unbinder mUnBinder;
@@ -31,6 +38,9 @@ public abstract class BaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(getLayout(), container, false);
         initComponent();
+        if (mPresenter != null) {
+            mPresenter.attachView(this);
+        }
         return view;
     }
 
@@ -43,6 +53,9 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (mPresenter != null) {
+            mPresenter.detachView();
+        }
         mUnBinder.unbind();
     }
 

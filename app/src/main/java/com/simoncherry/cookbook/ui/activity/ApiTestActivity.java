@@ -8,21 +8,19 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.simoncherry.cookbook.R;
-import com.simoncherry.cookbook.mvp.biz.ApiTestBiz;
-import com.simoncherry.cookbook.mvp.contract.ApiTestContract;
 import com.simoncherry.cookbook.di.component.DaggerApiTestComponent;
 import com.simoncherry.cookbook.di.module.ApiTestModule;
 import com.simoncherry.cookbook.model.MobCategoryResult;
 import com.simoncherry.cookbook.model.MobRecipe;
 import com.simoncherry.cookbook.model.MobRecipeResult;
+import com.simoncherry.cookbook.mvp.biz.ApiTestBiz;
+import com.simoncherry.cookbook.mvp.contract.ApiTestContract;
 import com.simoncherry.cookbook.mvp.presenter.ApiTestPresenter;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class ApiTestActivity extends BaseActivity implements ApiTestContract.View {
+public class ApiTestActivity extends BaseActivity<ApiTestPresenter> implements ApiTestContract.View {
 
     private final static String TAG = ApiTestActivity.class.getSimpleName();
 
@@ -35,8 +33,6 @@ public class ApiTestActivity extends BaseActivity implements ApiTestContract.Vie
     @BindView(R.id.btn_query_detail)
     Button btnQueryDetail;
 
-    @Inject
-    ApiTestPresenter apiTestPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +48,7 @@ public class ApiTestActivity extends BaseActivity implements ApiTestContract.Vie
     protected void initComponent() {
         //apiTestPresenter = new ApiTestPresenterImpl(getApplicationContext(), this);
         DaggerApiTestComponent.builder()
-                .apiTestModule(new ApiTestModule(new ApiTestBiz(), this))
+                .apiTestModule(new ApiTestModule(new ApiTestBiz()))
                 .build()
                 .inject(this);
     }
@@ -60,11 +56,6 @@ public class ApiTestActivity extends BaseActivity implements ApiTestContract.Vie
     @Override
     protected int getLayout() {
         return R.layout.activity_api_test;
-    }
-
-    @Override
-    public void setPresenter(ApiTestContract.Presenter presenter) {
-        apiTestPresenter = (ApiTestPresenter) presenter;
     }
 
     @Override
@@ -108,13 +99,13 @@ public class ApiTestActivity extends BaseActivity implements ApiTestContract.Vie
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_query_category:
-                apiTestPresenter.queryCategory();
+                mPresenter.queryCategory();
                 break;
             case R.id.btn_query_recipe:
-                apiTestPresenter.queryRecipe("0010001010", 1, 20);
+                mPresenter.queryRecipe("0010001010", 1, 20);
                 break;
             case R.id.btn_query_detail:
-                apiTestPresenter.queryDetail("00100010100000031636");
+                mPresenter.queryDetail("00100010100000031636");
                 break;
         }
     }

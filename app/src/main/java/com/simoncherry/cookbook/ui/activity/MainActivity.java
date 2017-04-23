@@ -32,7 +32,7 @@ import com.simoncherry.cookbook.ui.fragment.SettingFragment;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity
+public class MainActivity extends SimpleActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         CategoryFragment.OnFragmentInteractionListener{
 
@@ -54,17 +54,12 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         init();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    protected void initComponent() {
     }
 
     @Override

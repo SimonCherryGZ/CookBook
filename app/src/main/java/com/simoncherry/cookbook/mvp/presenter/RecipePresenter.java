@@ -11,26 +11,18 @@ import javax.inject.Inject;
  * Created by Simon on 2017/3/29.
  */
 
-public class RecipePresenter extends BasePresenter implements RecipeContract.Presenter{
+public class RecipePresenter extends RxPresenter<RecipeContract.View> implements RecipeContract.Presenter{
 
     private RecipeBiz mBiz;
-    private RecipeContract.View mView;
 
     @Inject
-    public RecipePresenter(RecipeBiz mBiz, RecipeContract.View mView) {
+    public RecipePresenter(RecipeBiz mBiz) {
         this.mBiz = mBiz;
-        this.mView = mView;
-
-        mView.setPresenter(this);
-    }
-
-    @Override
-    public void start() {
     }
 
     @Override
     public void queryRecipe(String cid, int page, int size) {
-        mBiz.queryRecipe(cid, page, size, new ApiCallback.QueryRecipeCallback() {
+        addSubscribe(mBiz.queryRecipe(cid, page, size, new ApiCallback.QueryRecipeCallback() {
             @Override
             public void onStart() {
                 mView.onShowProgressBar();
@@ -55,12 +47,12 @@ public class RecipePresenter extends BasePresenter implements RecipeContract.Pre
             public void onQueryError(String msg) {
                 mView.onQueryError(msg);
             }
-        });
+        }));
     }
 
     @Override
     public void queryRecipeByField(String field, String value, int page, int size) {
-        mBiz.queryRecipeByField(field, value, page, size, new ApiCallback.QueryRecipeCallback() {
+        addSubscribe(mBiz.queryRecipeByField(field, value, page, size, new ApiCallback.QueryRecipeCallback() {
             @Override
             public void onStart() {
                 mView.onShowProgressBar();
@@ -85,6 +77,6 @@ public class RecipePresenter extends BasePresenter implements RecipeContract.Pre
             public void onQueryError(String msg) {
                 mView.onQueryError(msg);
             }
-        });
+        }));
     }
 }

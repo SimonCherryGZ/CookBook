@@ -29,7 +29,7 @@ import io.realm.RealmResults;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CategoryFragment extends BaseFragment{
+public class CategoryFragment extends SimpleFragment{
 
     private final static String TAG = CategoryFragment.class.getSimpleName();
 
@@ -68,10 +68,6 @@ public class CategoryFragment extends BaseFragment{
     @Override
     protected int getLayout() {
         return R.layout.fragment_category;
-    }
-
-    @Override
-    protected void initComponent() {
     }
 
     @Override
